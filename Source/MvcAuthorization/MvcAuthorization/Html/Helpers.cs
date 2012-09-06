@@ -19,6 +19,13 @@ namespace MvcAuthorization.Html
         public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, string actionName)
         {
             IAuthorizationProvider authorizationProvider = DependencyResolver.Current.GetService<IAuthorizationProvider>();
+
+            // If there's none defined through dependency resolver use the configuration provider as the default
+            if (authorizationProvider == null)
+            {
+                authorizationProvider = ConfigurationAuthorizationProvider.Instance;
+            }
+
             MvcHtmlString html = MvcHtmlString.Empty;
             string controllerName = helper.ViewContext.RouteData.GetRequiredString("controller");
 

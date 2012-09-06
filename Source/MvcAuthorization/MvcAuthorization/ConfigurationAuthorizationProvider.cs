@@ -34,5 +34,20 @@ namespace MvcAuthorization
             // Null for all roles
             return new ActionAuthorizationDescriptor(actionName, controllerName, null);
         }
+
+        #region Singleton instance for when there is no dependency resolver
+
+        private static readonly Lazy<ConfigurationAuthorizationProvider> _instance
+             = new Lazy<ConfigurationAuthorizationProvider>(() => new ConfigurationAuthorizationProvider());
+
+        internal static ConfigurationAuthorizationProvider Instance
+        {
+            get
+            {
+                return _instance.Value;
+            }
+        }
+
+        #endregion
     }
 }
