@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MvcAuthorization
+namespace MvcAuthorization.AuthorizationDescriptors
 {
-    public class ActionAuthorizationDescriptor
+    public class ActionAuthorizationDescriptor : BaseAuthorizationDescriptor
     {
-        public ActionAuthorizationDescriptor(string actionName, string controllerName, List<string> roles)
+        public ActionAuthorizationDescriptor(string actionName, string controllerName, string areaName, List<string> roles)
         {
             Roles = roles;
             ControllerName = controllerName;
             ActionName = actionName;
+            AreaName = areaName;
         }
 
+        public string AreaName { get; set; }
         public string ActionName { get; set; }
         public string ControllerName { get; set; }
-        public List<string> Roles { get; set; }
     }
 }

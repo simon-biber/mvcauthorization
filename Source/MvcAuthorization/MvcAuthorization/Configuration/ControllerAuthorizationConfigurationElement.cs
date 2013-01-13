@@ -8,16 +8,16 @@ namespace MvcAuthorization.Configuration
 {
     public class ControllerAuthorizationConfigurationElement : ConfigurationElement
     {
-        [ConfigurationProperty("controller", IsRequired = true)]
+        [ConfigurationProperty("name", IsRequired = true)]
         public string Controller
         {
             get
             {
-                return (string)this["controller"];
+                return (string)this["name"];
             }
             set
             {
-                this["controller"] = value;
+                this["name"] = value;
             }
         }
 
@@ -34,25 +34,26 @@ namespace MvcAuthorization.Configuration
             }
         }
 
-        [ConfigurationProperty("actionAuthorizationMappings")]
+        [ConfigurationProperty("actions")]
+        [ConfigurationCollection(typeof(AreaAuthorizationConfigurationCollection), AddItemName = "addAction", ClearItemsName = "clearActions", RemoveItemName = "removeAction")]
         public ActionAuthorizationConfigurationCollection ActionAuthorizationMappings
         {
             get
             {
-                return this["actionAuthorizationMappings"] as ActionAuthorizationConfigurationCollection;
+                return this["actions"] as ActionAuthorizationConfigurationCollection;
             }
         }
 
-        //[ConfigurationProperty("customAuthorization")]
-        //public string CustomAuthorization
+        //[ConfigurationProperty("policy")]
+        //public string Policy
         //{
         //    get
         //    {
-        //        return (string)this["customAuthorization"];
+        //        return (string)this["policy"];
         //    }
         //    set
         //    {
-        //        this["customAuthorization"] = value;
+        //        this["policy"] = value;
         //    }
         //}
     }

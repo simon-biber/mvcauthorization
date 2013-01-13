@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections.Concurrent;
 using System.Web.Mvc;
 using System.Linq.Expressions;
+using MvcAuthorization.AuthorizationDescriptors;
 
 namespace MvcAuthorization
 {
@@ -13,9 +14,9 @@ namespace MvcAuthorization
         #region Private Backing Variables
 
         /// <summary>
-        /// Cache for controller descriptors
+        /// Cache for area authorizations
         /// </summary>
-        private static ConcurrentDictionary<Type, ReflectedControllerDescriptor> _controllerDescriptorCache = new ConcurrentDictionary<Type, ReflectedControllerDescriptor>();
+        private static ConcurrentDictionary<string, AreaAuthorizationDescriptor> _areaAuthorizationDescriptorCache = new ConcurrentDictionary<string, AreaAuthorizationDescriptor>();
 
         /// <summary>
         /// Cache for controller authorizations
@@ -27,16 +28,33 @@ namespace MvcAuthorization
         /// </summary>
         private static ConcurrentDictionary<string, ActionAuthorizationDescriptor> _actionAuthorizationDescriptorCache = new ConcurrentDictionary<string, ActionAuthorizationDescriptor>();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private static readonly string _rootDirectory = "./";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static readonly string _directorySeparator = "./";
+
         #endregion
 
         #region Abstract Members
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="areaName"></param>
+        /// <returns></returns>
+        protected abstract AreaAuthorizationDescriptor LoadAreaAuthorizationDescriptor(string areaName);
 
         /// <summary>
         /// Load a ControllerAuthorizationDescriptor from the backing store (must be implemented in the derived class)
         /// </summary>
         /// <param name="controllerName"></param>
         /// <returns></returns>
-        protected abstract ControllerAuthorizationDescriptor LoadControllerAuthorizationDescriptor(string controllerName);
+        protected abstract ControllerAuthorizationDescriptor LoadControllerAuthorizationDescriptor(string controllerName, string areaName);
 
         /// <summary>
         /// Load an ActionAuthorizationDescriptor from the backing store (must be implemented in the derived class)
@@ -44,20 +62,66 @@ namespace MvcAuthorization
         /// <param name="controllerName"></param>
         /// <param name="actionName"></param>
         /// <returns></returns>
-        protected abstract ActionAuthorizationDescriptor LoadActionAuthorizationDescriptor(string controllerName, string actionName);
+        protected abstract ActionAuthorizationDescriptor LoadActionAuthorizationDescriptor(string controllerName, string actionName, string areaName);
 
         #endregion
 
         #region Protected Helpers
 
-        protected string GetControllerAuthorizationDescriptorCacheKey(string controllerName)
+        /// <summary>
+        /// Gets the cache key for area authorization
+        /// </summary>
+        /// <param name="areaName"></param>
+        /// <returns></returns>
+        protected string GetAreaAuthorizationDescriptorCacheKey(string areaName)
         {
-            return controllerName;
+            if (string.IsNullOrWhiteSpace(areaName))
+            {
+                return _rootDirectory;
+            }
+            return string.Concat(_rootDirectory, areaName);
         }
 
-        protected string GetActionAuthorizationDescriptorCacheKey(string controllerName, string actionName)
+        /// <summary>
+        /// Gets the cache key for controller authorization
+        /// </summary>
+        /// <param name="areaName"></param>
+        /// <returns></returns>
+        protected string GetControllerAuthorizationDescriptorCacheKey(string controllerName, string areaName)
         {
-            return string.Concat(controllerName, ".", actionName);
+            if (string.IsNullOrWhiteSpace(areaName))
+            {
+                return string.Concat(_rootDirectory, controllerName);
+            }
+            return string.Concat(_rootDirectory, areaName, _directorySeparator, controllerName);
+        }
+
+        /// <summary>
+        /// Gets the cache key for area action
+        /// </summary>
+        /// <param name="areaName"></param>
+        /// <returns></returns>
+        protected string GetActionAuthorizationDescriptorCacheKey(string controllerName, string actionName, string areaName)
+        {
+            if (string.IsNullOrWhiteSpace(areaName))
+            {
+                return string.Concat(_rootDirectory, controllerName, _directorySeparator, actionName);
+            }
+            return string.Concat(_rootDirectory, areaName, _directorySeparator, controllerName, _directorySeparator, actionName);
+        }
+
+        /// <summary>
+        /// Get a AreaAuthorizationDescriptor from cache (or backing store if not cached yet)
+        /// </summary>
+        /// <param name="controllerName"></param>
+        /// <returns></returns>
+        protected AreaAuthorizationDescriptor GetAreaAuthorizationDescriptor(string areaName)
+        {
+            return _areaAuthorizationDescriptorCache.GetOrAdd(GetAreaAuthorizationDescriptorCacheKey(areaName),
+                    (name) =>
+                    {
+                        return LoadAreaAuthorizationDescriptor(areaName);
+                    });
         }
 
         /// <summary>
@@ -65,12 +129,12 @@ namespace MvcAuthorization
         /// </summary>
         /// <param name="controllerName"></param>
         /// <returns></returns>
-        protected ControllerAuthorizationDescriptor GetControllerAuthorizationDescriptor(string controllerName)
+        protected ControllerAuthorizationDescriptor GetControllerAuthorizationDescriptor(string controllerName, string areaName)
         {
-            return _controllerAuthorizationDescriptorCache.GetOrAdd(GetControllerAuthorizationDescriptorCacheKey(controllerName),
+            return _controllerAuthorizationDescriptorCache.GetOrAdd(GetControllerAuthorizationDescriptorCacheKey(controllerName, areaName),
                     (name) =>
                     {
-                        return LoadControllerAuthorizationDescriptor(controllerName);
+                        return LoadControllerAuthorizationDescriptor(controllerName, areaName);
                     });
         }
 
@@ -80,12 +144,12 @@ namespace MvcAuthorization
         /// <param name="controllerName"></param>
         /// <param name="actionName"></param>
         /// <returns></returns>
-        protected ActionAuthorizationDescriptor GetActionAuthorizationDescriptor(string controllerName, string actionName)
+        protected ActionAuthorizationDescriptor GetActionAuthorizationDescriptor(string controllerName, string actionName, string areaName)
         {
-            return _actionAuthorizationDescriptorCache.GetOrAdd(GetActionAuthorizationDescriptorCacheKey(controllerName, actionName),
+            return _actionAuthorizationDescriptorCache.GetOrAdd(GetActionAuthorizationDescriptorCacheKey(controllerName, actionName, areaName),
                     (name) =>
                     {
-                        return LoadActionAuthorizationDescriptor(controllerName, actionName);
+                        return LoadActionAuthorizationDescriptor(controllerName, actionName, areaName);
                     });
         }
 
@@ -93,129 +157,43 @@ namespace MvcAuthorization
 
         #region IAuthorizationProvider Members
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TController"></typeparam>
-        /// <param name="action"></param>
-        /// <param name="authorizationCheck"></param>
-        /// <returns></returns>
-        public bool IsAuthorizedAction<TController>(Expression<Action<TController>> action)
+        public bool IsAuthorizedAction(string controllerName, string actionName, string areaName = null)
         {
-            string actionName = string.Empty;
-            MethodCallExpression expr = action.Body as MethodCallExpression;
+            // Get the area item
+            AreaAuthorizationDescriptor area = GetAreaAuthorizationDescriptor(areaName);
 
-            if (expr == null)
-            {
-                return false;
-            }
-            actionName = expr.Method.Name;
-            ReflectedControllerDescriptor controllerDescriptor = _controllerDescriptorCache.GetOrAdd(typeof(TController), (type) => new ReflectedControllerDescriptor(type));
-            return IsAuthorizedAction(controllerDescriptor.ControllerName, actionName);
-        }
-
-
-        public bool IsAuthorizedAction(string controllerName, string actionName)
-        {
             // Get the controller item
-            ControllerAuthorizationDescriptor controller = GetControllerAuthorizationDescriptor(controllerName);
+            ControllerAuthorizationDescriptor controller = GetControllerAuthorizationDescriptor(controllerName, areaName);
 
             // Get the action item
-            ActionAuthorizationDescriptor action = GetActionAuthorizationDescriptor(controllerName, actionName);
+            ActionAuthorizationDescriptor action = GetActionAuthorizationDescriptor(controllerName, actionName, areaName);
 
             // Return auth
-            return IsAuthorized(controller) && IsAuthorized(action);
+            return area.IsAuthorized() && controller.IsAuthorized() && action.IsAuthorized();
         }
 
-        public bool IsAuthorizedController<TController>()
+        public bool IsAuthorizedController(string controllerName, string areaName = null)
         {
-            ReflectedControllerDescriptor controllerDescriptor = _controllerDescriptorCache.GetOrAdd(typeof(TController), (type) => new ReflectedControllerDescriptor(type));
-            return IsAuthorizedController(controllerDescriptor.ControllerName);
-        }
+            // Get the area item
+            AreaAuthorizationDescriptor area = GetAreaAuthorizationDescriptor(areaName);
 
-        public bool IsAuthorizedController(string controllerName)
-        {
             // Get the controller item
-            ControllerAuthorizationDescriptor controller = GetControllerAuthorizationDescriptor(controllerName);
+            ControllerAuthorizationDescriptor controller = GetControllerAuthorizationDescriptor(controllerName, areaName);
 
             // Return auth
-            return IsAuthorized(controller);
+            return area.IsAuthorized() && controller.IsAuthorized();
         }
 
-        public IEnumerable<string> GetRolesAction<TController>(Expression<Action<TController>> action)
+        public IEnumerable<string> GetRolesAction(string controllerName, string actionName, string areaName = null)
         {
-            string actionName = string.Empty;
-            MethodCallExpression expr = action.Body as MethodCallExpression;
-
-            if (expr == null)
-            {
-                return null;
-            }
-            actionName = expr.Method.Name;
-            ReflectedControllerDescriptor controllerDescriptor = _controllerDescriptorCache.GetOrAdd(typeof(TController), (type) => new ReflectedControllerDescriptor(type));
-            return GetRolesAction(controllerDescriptor.ControllerName, actionName);
-        }
-
-        public IEnumerable<string> GetRolesController<TController>()
-        {
-            ReflectedControllerDescriptor controllerDescriptor = _controllerDescriptorCache.GetOrAdd(typeof(TController), (type) => new ReflectedControllerDescriptor(type));
-            return GetRolesController(controllerDescriptor.ControllerName);
-        }
-
-        public IEnumerable<string> GetRolesAction(string controllerName, string actionName)
-        {
-            ActionAuthorizationDescriptor action = GetActionAuthorizationDescriptor(controllerName, actionName);
+            ActionAuthorizationDescriptor action = GetActionAuthorizationDescriptor(controllerName, actionName, areaName);
             return action != null && action.Roles != null ? action.Roles : null;
         }
 
-        public IEnumerable<string> GetRolesController(string controllerName)
+        public IEnumerable<string> GetRolesController(string controllerName, string areaName = null)
         {
-            ControllerAuthorizationDescriptor controller = GetControllerAuthorizationDescriptor(controllerName);
+            ControllerAuthorizationDescriptor controller = GetControllerAuthorizationDescriptor(controllerName, areaName);
             return controller != null && controller.Roles != null ? controller.Roles : null;
-        }
-
-        #endregion
-
-        #region Check authorization against controller/action descriptors
-
-        protected virtual bool IsAuthorized(ControllerAuthorizationDescriptor descriptor)
-        {
-            if (descriptor == null || descriptor.Roles == null || descriptor.Roles.Count == 0)
-            {
-                return true;
-            }
-
-            foreach (var role in descriptor.Roles)
-            {
-                if (System.Threading.Thread.CurrentPrincipal.IsInRole(role))
-                {
-                    // True if one role matches
-                    return true;
-                }
-            }
-
-            // No roles match, false
-            return false;
-        }
-
-        protected virtual bool IsAuthorized(ActionAuthorizationDescriptor descriptor)
-        {
-            if (descriptor == null || descriptor.Roles == null || descriptor.Roles.Count == 0)
-            {
-                return true;
-            }
-
-            foreach (var role in descriptor.Roles)
-            {
-                if (System.Threading.Thread.CurrentPrincipal.IsInRole(role))
-                {
-                    // True if one role matches
-                    return true;
-                }
-            }
-
-            // No roles match, false
-            return false;
         }
 
         #endregion

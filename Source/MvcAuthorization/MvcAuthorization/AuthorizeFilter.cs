@@ -18,7 +18,9 @@ namespace MvcAuthorization
                  authorizationProvider = ConfigurationAuthorizationProvider.Instance;
              }
 
-             if (!authorizationProvider.IsAuthorizedController(filterContext.ActionDescriptor.ControllerDescriptor.ControllerName) || !authorizationProvider.IsAuthorizedAction(filterContext.ActionDescriptor.ControllerDescriptor.ControllerName, filterContext.ActionDescriptor.ActionName))
+            string area = filterContext.RouteData.DataTokens["area"] as string;
+
+            if (!authorizationProvider.IsAuthorizedController(filterContext.ActionDescriptor.ControllerDescriptor.ControllerName, area) || !authorizationProvider.IsAuthorizedAction(filterContext.ActionDescriptor.ControllerDescriptor.ControllerName, filterContext.ActionDescriptor.ActionName, area))
              {
                  filterContext.Result = new HttpUnauthorizedResult();
              }

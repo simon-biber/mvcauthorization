@@ -19,30 +19,31 @@ namespace MvcAuthorization.Configuration
             }
         }
 
-        public static ControllerAuthorizationConfigurationCollection ControllerMappings
+        public static AreaAuthorizationConfigurationCollection AreaMappings
         {
             get
             {
-                ControllerAuthorizationConfigurationCollection result;
-                if (Section == null || Section.ControllerAuthorizationMappings == null)
+                AreaAuthorizationConfigurationCollection result;
+                if (Section == null || Section.AreaAuthorizationMappings == null)
                 {
-                    result = new ControllerAuthorizationConfigurationCollection();
+                    result = new AreaAuthorizationConfigurationCollection();
                 }
                 else
                 {
-                    result = Section.ControllerAuthorizationMappings;
+                    result = Section.AreaAuthorizationMappings;
                 }
 
                 return result;
             }
-        }
+        }        
 
-        [ConfigurationProperty("controllerAuthorizationMappings")]
-        public ControllerAuthorizationConfigurationCollection ControllerAuthorizationMappings
+        [ConfigurationProperty("areas")]
+        [ConfigurationCollection(typeof(AreaAuthorizationConfigurationCollection), AddItemName = "addArea", ClearItemsName = "clearAreas", RemoveItemName = "removeArea")]
+        public AreaAuthorizationConfigurationCollection AreaAuthorizationMappings
         {
             get
             {
-                return this["controllerAuthorizationMappings"] as ControllerAuthorizationConfigurationCollection;
+                return this["areas"] as AreaAuthorizationConfigurationCollection;
             }
         }
     }

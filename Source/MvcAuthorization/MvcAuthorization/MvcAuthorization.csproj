@@ -47,16 +47,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionAuthorizationDescriptor.cs" />
+    <Compile Include="AuthorizationDescriptors\ActionAuthorizationDescriptor.cs" />
+    <Compile Include="AuthorizationDescriptors\AreaAuthorizationDescriptor.cs" />
+    <Compile Include="AuthorizationDescriptors\BaseAuthorizationDescriptor.cs" />
+    <Compile Include="AuthorizationDescriptors\ExtensionMethods.cs" />
     <Compile Include="AuthorizationProvider.cs" />
     <Compile Include="AuthorizeFilter.cs" />
     <Compile Include="ConfigurationAuthorizationProvider.cs" />
     <Compile Include="Configuration\ActionAuthorizationConfigurationCollection.cs" />
     <Compile Include="Configuration\ActionAuthorizationConfigurationElement.cs" />
+    <Compile Include="Configuration\AreaAuthorizationConfigurationCollection.cs" />
+    <Compile Include="Configuration\AreaAuthorizationConfigurationElement.cs" />
     <Compile Include="Configuration\AuthorizationConfiguration.cs" />
     <Compile Include="Configuration\ControllerAuthorizationConfigurationCollection.cs" />
     <Compile Include="Configuration\ControllerAuthorizationConfigurationElement.cs" />
-    <Compile Include="ControllerAuthorizationDescriptor.cs" />
+    <Compile Include="AuthorizationDescriptors\ControllerAuthorizationDescriptor.cs" />
     <Compile Include="Html\Helpers.cs" />
     <Compile Include="IAuthorizationProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

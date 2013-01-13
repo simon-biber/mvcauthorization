@@ -6,10 +6,10 @@ using System.Configuration;
 
 namespace MvcAuthorization.Configuration
 {
-    public class ActionAuthorizationConfigurationElement : ConfigurationElement
+    public class AreaAuthorizationConfigurationElement : ConfigurationElement
     {
-        [ConfigurationProperty("name", IsRequired = true)]
-        public string Action
+        [ConfigurationProperty("name", IsRequired = false)]
+        public string Area
         {
             get
             {
@@ -31,6 +31,16 @@ namespace MvcAuthorization.Configuration
             set
             {
                 this["roles"] = value;
+            }
+        }
+
+        [ConfigurationProperty("controllers")]
+        [ConfigurationCollection(typeof(AreaAuthorizationConfigurationCollection), AddItemName = "addController", ClearItemsName = "clearControllers", RemoveItemName = "removeController")]
+        public ControllerAuthorizationConfigurationCollection ControllerAuthorizationMappings
+        {
+            get
+            {
+                return this["controllers"] as ControllerAuthorizationConfigurationCollection;
             }
         }
 
