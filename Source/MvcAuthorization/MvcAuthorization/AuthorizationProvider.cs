@@ -50,6 +50,16 @@ namespace MvcAuthorization
 
         #region Protected Helpers
 
+        protected string GetControllerAuthorizationDescriptorCacheKey(string controllerName)
+        {
+            return controllerName;
+        }
+
+        protected string GetActionAuthorizationDescriptorCacheKey(string controllerName, string actionName)
+        {
+            return string.Concat(controllerName, ".", actionName);
+        }
+
         /// <summary>
         /// Get a ControllerAuthorizationDescriptor from cache (or backing store if not cached yet)
         /// </summary>
@@ -57,7 +67,7 @@ namespace MvcAuthorization
         /// <returns></returns>
         protected ControllerAuthorizationDescriptor GetControllerAuthorizationDescriptor(string controllerName)
         {
-            return _controllerAuthorizationDescriptorCache.GetOrAdd(controllerName,
+            return _controllerAuthorizationDescriptorCache.GetOrAdd(GetControllerAuthorizationDescriptorCacheKey(controllerName),
                     (name) =>
                     {
                         return LoadControllerAuthorizationDescriptor(controllerName);
@@ -72,7 +82,7 @@ namespace MvcAuthorization
         /// <returns></returns>
         protected ActionAuthorizationDescriptor GetActionAuthorizationDescriptor(string controllerName, string actionName)
         {
-            return _actionAuthorizationDescriptorCache.GetOrAdd(actionName,
+            return _actionAuthorizationDescriptorCache.GetOrAdd(GetActionAuthorizationDescriptorCacheKey(controllerName, actionName),
                     (name) =>
                     {
                         return LoadActionAuthorizationDescriptor(controllerName, actionName);
