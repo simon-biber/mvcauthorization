@@ -35,7 +35,7 @@ namespace MvcAuthorization.Configuration
         }
 
         [ConfigurationProperty("controllers")]
-        [ConfigurationCollection(typeof(AreaAuthorizationConfigurationCollection), AddItemName = "addController", ClearItemsName = "clearControllers", RemoveItemName = "removeController")]
+        [ConfigurationCollection(typeof(AreaAuthorizationConfigurationCollection), AddItemName = "controller")]
         public ControllerAuthorizationConfigurationCollection ControllerAuthorizationMappings
         {
             get
@@ -44,17 +44,14 @@ namespace MvcAuthorization.Configuration
             }
         }
 
-        //[ConfigurationProperty("policy")]
-        //public string Policy
-        //{
-        //    get
-        //    {
-        //        return (string)this["policy"];
-        //    }
-        //    set
-        //    {
-        //        this["policy"] = value;
-        //    }
-        //}
+        [ConfigurationProperty("policies")]
+        [ConfigurationCollection(typeof(PolicyAuthorizationConfigurationCollection), AddItemName = "policy")]
+        public PolicyAuthorizationConfigurationCollection Policies
+        {
+            get
+            {
+                return this["policies"] as PolicyAuthorizationConfigurationCollection;
+            }
+        }
     }
 }

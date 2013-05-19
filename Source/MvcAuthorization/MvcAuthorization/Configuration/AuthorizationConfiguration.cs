@@ -38,7 +38,7 @@ namespace MvcAuthorization.Configuration
         }        
 
         [ConfigurationProperty("areas")]
-        [ConfigurationCollection(typeof(AreaAuthorizationConfigurationCollection), AddItemName = "addArea", ClearItemsName = "clearAreas", RemoveItemName = "removeArea")]
+        [ConfigurationCollection(typeof(AreaAuthorizationConfigurationCollection), AddItemName = "area")]
         public AreaAuthorizationConfigurationCollection AreaAuthorizationMappings
         {
             get

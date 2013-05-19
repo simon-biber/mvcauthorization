@@ -10,20 +10,18 @@ namespace MvcAuthorization
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-             IAuthorizationProvider authorizationProvider = DependencyResolver.Current.GetService<IAuthorizationProvider>();
-             
-             // If there's none defined through dependency resolver use the configuration provider as the default
-             if (authorizationProvider == null)
-             {
-                 authorizationProvider = ConfigurationAuthorizationProvider.Instance;
-             }
+            IAuthorizationProvider authorizationProvider = DependencyResolver.Current.GetService<IAuthorizationProvider>();
 
-            string area = filterContext.RouteData.DataTokens["area"] as string;
+            // If there's none defined through dependency resolver use the configuration provider as the default
+            if (authorizationProvider == null)
+            {
+                authorizationProvider = ConfigurationAuthorizationProvider.Instance;
+            }
 
-            if (!authorizationProvider.IsAuthorizedController(filterContext.ActionDescriptor.ControllerDescriptor.ControllerName, area) || !authorizationProvider.IsAuthorizedAction(filterContext.ActionDescriptor.ControllerDescriptor.ControllerName, filterContext.ActionDescriptor.ActionName, area))
-             {
-                 filterContext.Result = new HttpUnauthorizedResult();
-             }
+            if (!authorizationProvider.IsCurrentRequestAuthorized(filterContext))
+            {
+                filterContext.Result = new HttpUnauthorizedResult();
+            }
 
             base.OnActionExecuting(filterContext);
         }

@@ -62,8 +62,12 @@
     <Compile Include="Configuration\ControllerAuthorizationConfigurationCollection.cs" />
     <Compile Include="Configuration\ControllerAuthorizationConfigurationElement.cs" />
     <Compile Include="AuthorizationDescriptors\ControllerAuthorizationDescriptor.cs" />
+    <Compile Include="Configuration\PolicyAuthorizationConfigurationCollection.cs" />
+    <Compile Include="Configuration\PolicyAuthorizationConfigurationElement.cs" />
     <Compile Include="Html\Helpers.cs" />
     <Compile Include="IAuthorizationProvider.cs" />
+    <Compile Include="Policy\IPolicyHandler.cs" />
+    <Compile Include="Policy\PolicyHandlerArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

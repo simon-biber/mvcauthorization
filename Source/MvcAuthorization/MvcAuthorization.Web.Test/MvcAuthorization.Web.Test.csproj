@@ -75,6 +75,7 @@
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="MvcDependencyResolver.cs" />
+    <Compile Include="Policy\MyCustomPolicy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

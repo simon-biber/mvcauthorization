@@ -6,6 +6,8 @@ using System.Collections.Concurrent;
 using System.Web.Mvc;
 using System.Linq.Expressions;
 using MvcAuthorization.AuthorizationDescriptors;
+using System.Web.Routing;
+using MvcAuthorization.Policy;
 
 namespace MvcAuthorization
 {
@@ -16,17 +18,22 @@ namespace MvcAuthorization
         /// <summary>
         /// Cache for area authorizations
         /// </summary>
-        private static ConcurrentDictionary<string, AreaAuthorizationDescriptor> _areaAuthorizationDescriptorCache = new ConcurrentDictionary<string, AreaAuthorizationDescriptor>();
+        protected static ConcurrentDictionary<string, AreaAuthorizationDescriptor> _areaAuthorizationDescriptorCache = new ConcurrentDictionary<string, AreaAuthorizationDescriptor>();
 
         /// <summary>
         /// Cache for controller authorizations
         /// </summary>
-        private static ConcurrentDictionary<string, ControllerAuthorizationDescriptor> _controllerAuthorizationDescriptorCache = new ConcurrentDictionary<string, ControllerAuthorizationDescriptor>();
+        protected static ConcurrentDictionary<string, ControllerAuthorizationDescriptor> _controllerAuthorizationDescriptorCache = new ConcurrentDictionary<string, ControllerAuthorizationDescriptor>();
 
         /// <summary>
         /// Cache for controller authorizations
         /// </summary>
-        private static ConcurrentDictionary<string, ActionAuthorizationDescriptor> _actionAuthorizationDescriptorCache = new ConcurrentDictionary<string, ActionAuthorizationDescriptor>();
+        protected static ConcurrentDictionary<string, ActionAuthorizationDescriptor> _actionAuthorizationDescriptorCache = new ConcurrentDictionary<string, ActionAuthorizationDescriptor>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected static ConcurrentDictionary<string, IPolicyHandler> _policyHandlerCache = new ConcurrentDictionary<string, IPolicyHandler>();
 
         /// <summary>
         /// 
@@ -157,7 +164,7 @@ namespace MvcAuthorization
 
         #region IAuthorizationProvider Members
 
-        public bool IsAuthorizedAction(string controllerName, string actionName, string areaName = null)
+        public bool IsAuthorizedAction(string controllerName, string actionName, string areaName = null, RouteValueDictionary routeValueDictionary = null)
         {
             // Get the area item
             AreaAuthorizationDescriptor area = GetAreaAuthorizationDescriptor(areaName);
@@ -169,31 +176,26 @@ namespace MvcAuthorization
             ActionAuthorizationDescriptor action = GetActionAuthorizationDescriptor(controllerName, actionName, areaName);
 
             // Return auth
-            return area.IsAuthorized() && controller.IsAuthorized() && action.IsAuthorized();
+            return area.IsAuthorized(null) && controller.IsAuthorized(null) && action.IsAuthorized(null);
         }
 
-        public bool IsAuthorizedController(string controllerName, string areaName = null)
+        public bool IsCurrentRequestAuthorized(ActionExecutingContext actionExecutingContext)
         {
+            string areaName = actionExecutingContext.RouteData.DataTokens["area"] as string;
+            string actionName = actionExecutingContext.ActionDescriptor.ActionName;
+            string controllerName = actionExecutingContext.ActionDescriptor.ControllerDescriptor.ControllerName;
+
             // Get the area item
             AreaAuthorizationDescriptor area = GetAreaAuthorizationDescriptor(areaName);
 
             // Get the controller item
             ControllerAuthorizationDescriptor controller = GetControllerAuthorizationDescriptor(controllerName, areaName);
 
-            // Return auth
-            return area.IsAuthorized() && controller.IsAuthorized();
-        }
-
-        public IEnumerable<string> GetRolesAction(string controllerName, string actionName, string areaName = null)
-        {
+            // Get the action item
             ActionAuthorizationDescriptor action = GetActionAuthorizationDescriptor(controllerName, actionName, areaName);
-            return action != null && action.Roles != null ? action.Roles : null;
-        }
 
-        public IEnumerable<string> GetRolesController(string controllerName, string areaName = null)
-        {
-            ControllerAuthorizationDescriptor controller = GetControllerAuthorizationDescriptor(controllerName, areaName);
-            return controller != null && controller.Roles != null ? controller.Roles : null;
+            // Return auth
+            return area.IsAuthorized(actionExecutingContext) && controller.IsAuthorized(actionExecutingContext) && action.IsAuthorized(actionExecutingContext);
         }
 
         #endregion

@@ -29,7 +29,7 @@ namespace MvcAuthorization.Html
             MvcHtmlString html = MvcHtmlString.Empty;
             string controller = controllerName ?? helper.ViewContext.RouteData.GetRequiredString("controller");
 
-            if (authorizationProvider.IsAuthorizedController(controller, areaName) && authorizationProvider.IsAuthorizedAction(controller, actionName, areaName))
+            if (authorizationProvider.IsAuthorizedAction(controller, actionName, areaName))
             {
                 html = System.Web.Mvc.Html.LinkExtensions.ActionLink(helper, linkText, actionName, controller, new { area = areaName }, null);
             }
