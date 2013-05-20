@@ -61,10 +61,6 @@ namespace MvcAuthorization.AuthorizationDescriptors
                         // Handle via policy
                         isAuthorized = policyHandler.Apply(new ApplyPolicyArgs()
                                                                     {
-                                                                        ActionName = descriptor.ActionName,
-                                                                        AreaName = descriptor.AreaName,
-                                                                        ControllerName = descriptor.ControllerName,
-                                                                        ActionExecutingContext = actionExecutingContext
                                                                     }).IsAuthorized;
 
                         if (!isAuthorized)
