@@ -45,17 +45,17 @@ namespace MvcAuthorization
             return new ActionAuthorizationDescriptor(actionName, controllerName, areaName, null, null);
         }
 
-        protected IEnumerable<string> LoadPolicyHandlerFromConfig(PolicyAuthorizationConfigurationCollection policyHandlerCollection)
+        protected IEnumerable<PolicyAuthorizationDescriptor> LoadPolicyHandlerFromConfig(PolicyAuthorizationConfigurationCollection policyHandlerCollection)
         {
             if (policyHandlerCollection != null && policyHandlerCollection.Count > 0)
             {
-                List<string> policyHandlers = new List<string>();
+                List<PolicyAuthorizationDescriptor> policyDescriptors = new List<PolicyAuthorizationDescriptor>();
 
                 foreach (PolicyAuthorizationConfigurationElement policyHandlerElement in policyHandlerCollection)
                 {
-                    policyHandlers.Add(policyHandlerElement.Type);
+                    policyDescriptors.Add(new PolicyAuthorizationDescriptor(policyHandlerElement.Type, policyHandlerElement.Value));
                 }
-                return policyHandlers;
+                return policyDescriptors;
             }
 
             return null;

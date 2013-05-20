@@ -20,5 +20,18 @@ namespace MvcAuthorization.Configuration
                 this["type"] = value;
             }
         }
+
+        [ConfigurationProperty("value", IsRequired=true)]
+        public string Value
+        {
+            get
+            {
+                return (string)this["value"];
+            }
+            set
+            {
+                this["value"] = value;
+            }
+        }
     }
 }

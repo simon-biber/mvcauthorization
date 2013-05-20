@@ -51,6 +51,7 @@
     <Compile Include="AuthorizationDescriptors\AreaAuthorizationDescriptor.cs" />
     <Compile Include="AuthorizationDescriptors\BaseAuthorizationDescriptor.cs" />
     <Compile Include="AuthorizationDescriptors\ExtensionMethods.cs" />
+    <Compile Include="AuthorizationDescriptors\PolicyAuthorizationDescriptor.cs" />
     <Compile Include="AuthorizationProvider.cs" />
     <Compile Include="AuthorizeFilter.cs" />
     <Compile Include="ConfigurationAuthorizationProvider.cs" />
@@ -66,8 +67,12 @@
     <Compile Include="Configuration\PolicyAuthorizationConfigurationElement.cs" />
     <Compile Include="Html\Helpers.cs" />
     <Compile Include="IAuthorizationProvider.cs" />
+    <Compile Include="Policies\DenyAnonymousAccessPolicy.cs" />
+    <Compile Include="Policies\LocalOnlyPolicy.cs" />
+    <Compile Include="Policies\SecureConnectionOnlyPolicy.cs" />
     <Compile Include="Policy\IPolicyHandler.cs" />
     <Compile Include="Policy\PolicyHandlerArgs.cs" />
+    <Compile Include="Policy\AuthorizationPolicyAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

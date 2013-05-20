@@ -13,7 +13,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
         /// <summary>
         /// Maps a policy typeName to a type
         /// </summary>
-        private static ConcurrentDictionary<string, Type> _policyHandlerTypeCache = new ConcurrentDictionary<string, Type>();
+        private static ConcurrentDictionary<PolicyAuthorizationDescriptor, Type> _policyHandlerTypeCache = new ConcurrentDictionary<PolicyAuthorizationDescriptor, Type>();
 
         /// <summary>
         /// Given a policy handler type, stores a cached instance for this thread (for cases where we are not using an IOC container for lifetime management)
@@ -50,25 +50,28 @@ namespace MvcAuthorization.AuthorizationDescriptors
             }
 
             // Only invoke the policy handler if role is valid
-            if (isAuthorized && descriptor.PolicyHandlerTypes != null)
+            if (isAuthorized && descriptor.PolicyAuthorizationDescriptors != null)
             {
-                foreach (var policyHandlerType in descriptor.PolicyHandlerTypes)
+                foreach (var policyAuthorizationDescriptor in descriptor.PolicyAuthorizationDescriptors)
                 {
-                    IPolicyHandler policyHandler = GetPolicyHandlerInstance(policyHandlerType);
+                    IPolicyHandler policyHandler = GetPolicyHandlerInstance(policyAuthorizationDescriptor);
 
-                    // Handle via policy
-                    isAuthorized = policyHandler.Handle(new PolicyHandlerArgs()
-                                                                {
-                                                                    ActionName = descriptor.ActionName,
-                                                                    AreaName = descriptor.AreaName,
-                                                                    ControllerName = descriptor.ControllerName,
-                                                                    ActionExecutingContext = actionExecutingContext
-                                                                });
-
-                    if (!isAuthorized)
+                    if (policyHandler != null)
                     {
-                        // Stop checking if one fails
-                        break;
+                        // Handle via policy
+                        isAuthorized = policyHandler.Handle(new PolicyHandlerArgs()
+                                                                    {
+                                                                        ActionName = descriptor.ActionName,
+                                                                        AreaName = descriptor.AreaName,
+                                                                        ControllerName = descriptor.ControllerName,
+                                                                        ActionExecutingContext = actionExecutingContext
+                                                                    });
+
+                        if (!isAuthorized)
+                        {
+                            // Stop checking if one fails
+                            break;
+                        }
                     }
                 }
                 
@@ -81,18 +84,37 @@ namespace MvcAuthorization.AuthorizationDescriptors
         /// </summary>
         /// <param name="policyHandlerType"></param>
         /// <returns></returns>
-        private static IPolicyHandler GetPolicyHandlerInstance(string policyHandlerType)
+        private static IPolicyHandler GetPolicyHandlerInstance(PolicyAuthorizationDescriptor policyAuthorizationDescriptor)
         {
             Func<Type, object> typeResolver = AuthorizationProvider.GetTypeResolver();
                            
             // Get the handler type from the cache
-            Type handlerType = _policyHandlerTypeCache.GetOrAdd(policyHandlerType, (typeName) =>
+            Type handlerType = _policyHandlerTypeCache.GetOrAdd(policyAuthorizationDescriptor, (descriptor) =>
                 {
-                    return Type.GetType(typeName);
+                    if (string.Equals(descriptor.Type, "TypeName", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return Type.GetType(descriptor.Value);
+                    }
+                    else if(string.Equals(descriptor.Type, "Name", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var policyHandlerInterface = typeof(IPolicyHandler);
+                        var policyHandlers = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+                                                        .Where(t => policyHandlerInterface.IsAssignableFrom(t) && !t.IsAbstract && t.IsClass && t.IsPublic && !t.IsGenericType);
+
+                        var policyAttributes = policyHandlers.Where(t => {
+                                var attribute = (AuthorizationPolicyAttribute)Attribute.GetCustomAttribute(t, typeof(AuthorizationPolicyAttribute));
+                                return attribute != null && string.Equals(attribute.Name, descriptor.Value);                          
+                        });
+                        return policyAttributes.FirstOrDefault();
+                    }
+                    else
+                    {
+                        throw new Exception("Error");
+                    }
                 });
 
             // Resolve the instance using the IOC container if specified
-            if (typeResolver != null)
+            if (typeResolver != null && handlerType != null)
             {
                 IPolicyHandler policyHandler = typeResolver.Invoke(handlerType) as IPolicyHandler;
 
@@ -103,10 +125,11 @@ namespace MvcAuthorization.AuthorizationDescriptors
             }
 
             // Get the policy handler from the cache, default per-thread lifetime
-            return _policyHandlerCache.GetOrAdd(handlerType, (type) =>
-                    {
-                        return (IPolicyHandler)Activator.CreateInstance(type);
-                    });
+            return handlerType != null ? _policyHandlerCache.GetOrAdd(handlerType, (type) =>
+                                                {
+                                                    return (IPolicyHandler)Activator.CreateInstance(type);
+                                                })
+                                        : null;
         }
     }
 }

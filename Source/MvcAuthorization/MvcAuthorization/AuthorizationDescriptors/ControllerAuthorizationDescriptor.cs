@@ -8,10 +8,10 @@ namespace MvcAuthorization.AuthorizationDescriptors
 {
     public class ControllerAuthorizationDescriptor : BaseAuthorizationDescriptor
     {
-        public ControllerAuthorizationDescriptor(string controllerName, string areaName, List<string> roles, IEnumerable<string> policyHandlers)
+        public ControllerAuthorizationDescriptor(string controllerName, string areaName, List<string> roles, IEnumerable<PolicyAuthorizationDescriptor> policyAuthorizationDescriptors)
         {
             Roles = roles;
-            PolicyHandlerTypes = policyHandlers;
+            PolicyAuthorizationDescriptors = policyAuthorizationDescriptors;
             ControllerName = controllerName;
             AreaName = areaName;
         }
