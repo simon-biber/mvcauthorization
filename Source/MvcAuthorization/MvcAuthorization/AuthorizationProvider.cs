@@ -31,9 +31,9 @@ namespace MvcAuthorization
         protected static ConcurrentDictionary<string, ActionAuthorizationDescriptor> _actionAuthorizationDescriptorCache = new ConcurrentDictionary<string, ActionAuthorizationDescriptor>();
 
         /// <summary>
-        /// 
+        /// Instantiate an object from a type using an IOC container
         /// </summary>
-        protected static ConcurrentDictionary<string, IPolicyHandler> _policyHandlerCache = new ConcurrentDictionary<string, IPolicyHandler>();
+        protected static Func<Type, object> _typeResolver = null;
 
         /// <summary>
         /// 
@@ -196,6 +196,58 @@ namespace MvcAuthorization
 
             // Return auth
             return area.IsAuthorized(actionExecutingContext) && controller.IsAuthorized(actionExecutingContext) && action.IsAuthorized(actionExecutingContext);
+        }
+
+        #endregion
+
+        #region IOC Container Hooks
+
+        /// <summary>
+        /// Initializes a type resolver, which returns a concrete instance of an object based on type.
+        /// </summary>
+        /// <param name="typeResolver"></param>
+        public static void InitializeTypeResolver(Func<Type, object> typeResolver)
+        {
+            _typeResolver = typeResolver;
+        }
+
+        /// <summary>
+        /// Resolves a given type using the type resolver (if specified)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T ResolveType<T>() where T : class
+        {
+            if (_typeResolver != null)
+            {
+                return _typeResolver.Invoke(typeof(T)) as T;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Resolves a given type using the type resolver (if specified)
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static object ResolveType(Type type)
+        {
+            if (_typeResolver != null)
+            {
+                return _typeResolver.Invoke(type);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the current type resolver
+        /// </summary>
+        /// <returns></returns>
+        public static Func<Type,object> GetTypeResolver()
+        {
+            return _typeResolver;
         }
 
         #endregion

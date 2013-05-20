@@ -33,34 +33,27 @@ namespace MvcAuthorization
             {
                 ActionAuthorizationConfigurationElement actionElement = controllerElement.ActionAuthorizationMappings.Where(e => e.Action == actionName).FirstOrDefault();
 
-                if (actionElement != null && !string.IsNullOrEmpty(actionElement.Roles))
+                if (actionElement != null)
                 {
-                    return new ActionAuthorizationDescriptor(actionName, controllerName, areaName, actionElement.Roles.Split(',').ToList(), LoadPolicyHandlerFromConfig(actionElement != null ? actionElement.Policies : null));
+                    return new ActionAuthorizationDescriptor(actionName, controllerName, areaName, 
+                                                    !string.IsNullOrEmpty(actionElement.Roles) ? actionElement.Roles.Split(',').ToList() : null, 
+                                                    LoadPolicyHandlerFromConfig(actionElement.Policies));
                 }
             }
 
-            // Null for all roles
+            // Null for all roles if no controller/action element found
             return new ActionAuthorizationDescriptor(actionName, controllerName, areaName, null, null);
         }
 
-        /// <summary>
-        /// Loads the policy handler specified by the config.
-        /// </summary>
-        /// <param name="activationString"></param>
-        /// <returns></returns>
-        protected IEnumerable<IPolicyHandler> LoadPolicyHandlerFromConfig(PolicyAuthorizationConfigurationCollection policyHandlerCollection)
+        protected IEnumerable<string> LoadPolicyHandlerFromConfig(PolicyAuthorizationConfigurationCollection policyHandlerCollection)
         {
             if (policyHandlerCollection != null && policyHandlerCollection.Count > 0)
             {
-                List<IPolicyHandler> policyHandlers = new List<IPolicyHandler>();
+                List<string> policyHandlers = new List<string>();
 
                 foreach (PolicyAuthorizationConfigurationElement policyHandlerElement in policyHandlerCollection)
                 {
-                    // Get the policy handler from the cache
-                    policyHandlers.Add(_policyHandlerCache.GetOrAdd(policyHandlerElement.Type, (name) =>
-                                    {
-                                        return (IPolicyHandler)Activator.CreateInstance(Type.GetType(name));
-                                    }));
+                    policyHandlers.Add(policyHandlerElement.Type);
                 }
                 return policyHandlers;
             }

@@ -10,9 +10,9 @@ namespace MvcAuthorization
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            IAuthorizationProvider authorizationProvider = DependencyResolver.Current.GetService<IAuthorizationProvider>();
+            IAuthorizationProvider authorizationProvider = AuthorizationProvider.ResolveType<IAuthorizationProvider>();
 
-            // If there's none defined through dependency resolver use the configuration provider as the default
+            // If there's none defined through the type resolver use the configuration provider as the default
             if (authorizationProvider == null)
             {
                 authorizationProvider = ConfigurationAuthorizationProvider.Instance;
