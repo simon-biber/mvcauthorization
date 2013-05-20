@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using System.Collections.Concurrent;
+using MvcAuthorization.Policy;
 
 namespace MvcAuthorization.AuthorizationDescriptors
 {

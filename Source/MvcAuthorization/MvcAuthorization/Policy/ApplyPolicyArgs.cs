@@ -5,7 +5,7 @@ using System.Text;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace MvcAuthorization
+namespace MvcAuthorization.Policy
 {
     public class ApplyPolicyArgs
     {
