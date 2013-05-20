@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MvcAuthorization.Policy;
 using System.Web;
 
 namespace MvcAuthorization.Policies
 {
-    [AuthorizationPolicy(Name="LocalOnly")]
-    public class LocalOnlyPolicy : IPolicyHandler
+    [PolicyMetadata(Name="LocalOnly")]
+    public class LocalOnlyPolicy : IAuthorizationPolicy
     {
-        public bool Handle(PolicyHandlerArgs args)
+        public ApplyPolicyResult Apply(ApplyPolicyArgs args)
         {
-            return HttpContext.Current.Request.IsLocal;
+            return new ApplyPolicyResult() { IsAuthorized = HttpContext.Current.Request.IsLocal };
         }
     }
 }

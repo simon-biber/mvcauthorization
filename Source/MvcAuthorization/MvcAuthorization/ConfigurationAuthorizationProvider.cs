@@ -7,7 +7,6 @@ using System.Linq.Expressions;
 using System.Web.Mvc;
 using System.Collections.Concurrent;
 using MvcAuthorization.AuthorizationDescriptors;
-using MvcAuthorization.Policy;
 
 namespace MvcAuthorization
 {

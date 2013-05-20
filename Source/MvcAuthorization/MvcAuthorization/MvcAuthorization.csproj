@@ -70,9 +70,10 @@
     <Compile Include="Policies\DenyAnonymousAccessPolicy.cs" />
     <Compile Include="Policies\LocalOnlyPolicy.cs" />
     <Compile Include="Policies\SecureConnectionOnlyPolicy.cs" />
-    <Compile Include="Policy\IPolicyHandler.cs" />
-    <Compile Include="Policy\PolicyHandlerArgs.cs" />
-    <Compile Include="Policy\AuthorizationPolicyAttribute.cs" />
+    <Compile Include="Policy\ApplyPolicyResult.cs" />
+    <Compile Include="Policy\IAuthorizationPolicy.cs" />
+    <Compile Include="Policy\ApplyPolicyArgs.cs" />
+    <Compile Include="Policy\PolicyMetadataAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

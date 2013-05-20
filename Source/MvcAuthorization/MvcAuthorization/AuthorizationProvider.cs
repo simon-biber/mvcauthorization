@@ -7,7 +7,6 @@ using System.Web.Mvc;
 using System.Linq.Expressions;
 using MvcAuthorization.AuthorizationDescriptors;
 using System.Web.Routing;
-using MvcAuthorization.Policy;
 
 namespace MvcAuthorization
 {

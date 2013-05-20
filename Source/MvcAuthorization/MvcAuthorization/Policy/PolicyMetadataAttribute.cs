@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MvcAuthorization.Policy
+namespace MvcAuthorization
 {
-    public class AuthorizationPolicyAttribute : Attribute
+    public class PolicyMetadataAttribute : Attribute
     {
         public string Name { get; set; }
     }

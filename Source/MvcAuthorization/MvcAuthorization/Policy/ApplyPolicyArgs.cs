@@ -7,7 +7,7 @@ using System.Web.Routing;
 
 namespace MvcAuthorization
 {
-    public class PolicyHandlerArgs
+    public class ApplyPolicyArgs
     {
         /// <summary>
         /// 

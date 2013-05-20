@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MvcAuthorization.Policy;
 using System.Web;
 
 namespace MvcAuthorization.Policies
 {
-    [AuthorizationPolicy(Name="SecureConnectionOnly")]
-    public class SecureConnectionOnlyPolicy : IPolicyHandler
+    [PolicyMetadata(Name="SecureConnectionOnly")]
+    public class SecureConnectionOnlyPolicy : IAuthorizationPolicy
     {
-        public bool Handle(PolicyHandlerArgs args)
+        public ApplyPolicyResult Apply(ApplyPolicyArgs args)
         {
-            return HttpContext.Current.Request.IsSecureConnection;
+            return new ApplyPolicyResult() { IsAuthorized = HttpContext.Current.Request.IsSecureConnection };
         }
     }
 }
