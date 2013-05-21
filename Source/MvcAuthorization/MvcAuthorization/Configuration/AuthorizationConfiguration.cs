@@ -9,7 +9,7 @@ namespace MvcAuthorization.Configuration
     public class AuthorizationConfiguration : ConfigurationSection
     {
         private static AuthorizationConfiguration _authorizationConfiguration
-            = ConfigurationManager.GetSection("authorizationConfiguration") as AuthorizationConfiguration;
+            = ConfigurationManager.GetSection("mvcAuthorization") as AuthorizationConfiguration;
 
         public static AuthorizationConfiguration Section
         {
