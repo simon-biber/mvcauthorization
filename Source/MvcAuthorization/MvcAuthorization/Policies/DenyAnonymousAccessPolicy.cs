@@ -7,9 +7,9 @@ using MvcAuthorization.Policy;
 namespace MvcAuthorization.Policies
 {
     [PolicyMetadata(Name="DenyAnonymousAccess")]
-    public class DenyAnonymousAccessPolicy : IAuthorizationPolicy
+    public class DenyAnonymousAccessPolicy : AuthorizationPolicy
     {
-        public ApplyPolicyResult Apply(ApplyPolicyArgs args)
+        public override ApplyPolicyResult ApplyPolicy(ApplyPolicyArgs args)
         {
             return new ApplyPolicyResult() { IsAuthorized = System.Threading.Thread.CurrentPrincipal.Identity.IsAuthenticated };
         }

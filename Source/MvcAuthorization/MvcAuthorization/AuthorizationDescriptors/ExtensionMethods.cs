@@ -59,7 +59,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
                     if (policyHandler != null)
                     {
                         // Handle via policy
-                        isAuthorized = policyHandler.Apply(new ApplyPolicyArgs()
+                        isAuthorized = policyHandler.ApplyPolicy(new ApplyPolicyArgs()
                                                                     {
                                                                     }).IsAuthorized;
 

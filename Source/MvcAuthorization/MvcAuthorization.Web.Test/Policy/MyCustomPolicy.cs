@@ -6,9 +6,9 @@ using MvcAuthorization.Policy;
 
 namespace MvcAuthorization.Web.Test.Policy
 {
-    public class MyCustomPolicy : IAuthorizationPolicy
+    public class MyCustomPolicy : AuthorizationPolicy
     {
-        public ApplyPolicyResult Apply(ApplyPolicyArgs args)
+        public override ApplyPolicyResult ApplyPolicy(ApplyPolicyArgs args)
         {
             return new ApplyPolicyResult() { IsAuthorized = true };
         }

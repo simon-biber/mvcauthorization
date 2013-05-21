@@ -5,27 +5,36 @@ using System.Text;
 
 namespace MvcAuthorization.Policy
 {
-    public interface IAuthorizationPolicy
+    public abstract class AuthorizationPolicy : IAuthorizationPolicy
     {
         /// <summary>
         /// Globally applies a policy for all request types
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        ApplyPolicyResult ApplyPolicy(ApplyPolicyArgs args);
+        public virtual ApplyPolicyResult ApplyPolicy(ApplyPolicyArgs args)
+        {
+            return new ApplyPolicyResult() { IsAuthorized = true };
+        }
 
         /// <summary>
         /// Applies the policy if the current item is a controller action
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        ApplyPolicyResult ApplyActionPolicy(ApplyActionPolicyArgs args);
+        public virtual ApplyPolicyResult ApplyActionPolicy(ApplyActionPolicyArgs args)
+        {
+            return new ApplyPolicyResult() { IsAuthorized = true };
+        }
 
         /// <summary>
         /// Applies the policy if the current item is a SignalR hub or PersistentConnection
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        ApplyPolicyResult ApplySignalRPolicy(ApplySignalRPolicyArgs args);
+        public virtual ApplyPolicyResult ApplySignalRPolicy(ApplySignalRPolicyArgs args)
+        {
+            return new ApplyPolicyResult() { IsAuthorized = true };
+        }
     }
 }

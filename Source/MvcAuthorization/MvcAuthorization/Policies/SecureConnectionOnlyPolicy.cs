@@ -8,9 +8,9 @@ using MvcAuthorization.Policy;
 namespace MvcAuthorization.Policies
 {
     [PolicyMetadata(Name="SecureConnectionOnly")]
-    public class SecureConnectionOnlyPolicy : IAuthorizationPolicy
+    public class SecureConnectionOnlyPolicy : AuthorizationPolicy
     {
-        public ApplyPolicyResult Apply(ApplyPolicyArgs args)
+        public override ApplyPolicyResult ApplyPolicy(ApplyPolicyArgs args)
         {
             return new ApplyPolicyResult() { IsAuthorized = HttpContext.Current.Request.IsSecureConnection };
         }

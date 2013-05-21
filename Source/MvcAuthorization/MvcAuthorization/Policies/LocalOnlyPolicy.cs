@@ -8,9 +8,9 @@ using MvcAuthorization.Policy;
 namespace MvcAuthorization.Policies
 {
     [PolicyMetadata(Name="LocalOnly")]
-    public class LocalOnlyPolicy : IAuthorizationPolicy
+    public class LocalOnlyPolicy : AuthorizationPolicy
     {
-        public ApplyPolicyResult Apply(ApplyPolicyArgs args)
+        public override ApplyPolicyResult ApplyPolicy(ApplyPolicyArgs args)
         {
             return new ApplyPolicyResult() { IsAuthorized = HttpContext.Current.Request.IsLocal };
         }
