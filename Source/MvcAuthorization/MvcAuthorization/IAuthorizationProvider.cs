@@ -11,13 +11,13 @@ namespace MvcAuthorization
     public interface IAuthorizationProvider
     {
         /// <summary>
-        /// Validates that the current request is authorized
+        /// Validates that the current request for an action is authorized
         /// </summary>
         /// <returns></returns>
-        bool IsCurrentRequestAuthorized(ActionExecutingContext actionExecutingContext);
+        bool IsActionRequestAuthorized(ActionExecutingContext actionExecutingContext);
 
         /// <summary>
-        /// Validates that the specified action is authorized
+        /// Validates that access to an action is authorized without the context of an ActionRequest
         /// </summary>
         /// <param name="controllerName"></param>
         /// <param name="actionName"></param>

@@ -19,7 +19,7 @@ namespace MvcAuthorization
                 authorizationProvider = ConfigurationAuthorizationProvider.Instance;
             }
 
-            if (!authorizationProvider.IsCurrentRequestAuthorized(filterContext))
+            if (!authorizationProvider.IsActionRequestAuthorized(filterContext))
             {
                 filterContext.Result = new HttpUnauthorizedResult();
             }

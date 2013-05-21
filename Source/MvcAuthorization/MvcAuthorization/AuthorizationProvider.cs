@@ -178,7 +178,7 @@ namespace MvcAuthorization
             return area.IsAuthorized(null) && controller.IsAuthorized(null) && action.IsAuthorized(null);
         }
 
-        public bool IsCurrentRequestAuthorized(ActionExecutingContext actionExecutingContext)
+        public bool IsActionRequestAuthorized(ActionExecutingContext actionExecutingContext)
         {
             string areaName = actionExecutingContext.RouteData.DataTokens["area"] as string;
             string actionName = actionExecutingContext.ActionDescriptor.ActionName;
