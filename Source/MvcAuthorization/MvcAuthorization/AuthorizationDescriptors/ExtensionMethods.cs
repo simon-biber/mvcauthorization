@@ -24,9 +24,9 @@ namespace MvcAuthorization.AuthorizationDescriptors
         /// 
         /// </summary>
         /// <param name="descriptor"></param>
-        /// <param name="policyApplicator"></param>
+        /// <param name="policyChecker"></param>
         /// <returns></returns>
-        private static bool IsAuthorized(BaseAuthorizationDescriptor descriptor, Func<IAuthorizationPolicy, bool> policyApplicator)
+        private static bool IsAuthorized(BaseAuthorizationDescriptor descriptor, Func<IAuthorizationPolicy, bool> policyChecker)
         {
             if (descriptor == null)
             {
@@ -59,7 +59,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
                     if (policyHandler != null)
                     {
                         // Handle via policy
-                        isAuthorized = policyApplicator.Invoke(policyHandler);
+                        isAuthorized = policyChecker.Invoke(policyHandler);
 
                         if (!isAuthorized)
                         {
@@ -81,14 +81,14 @@ namespace MvcAuthorization.AuthorizationDescriptors
         /// <returns></returns>
         public static bool IsAuthorized(this BaseAuthorizationDescriptor descriptor, ActionExecutingContext actionExecutingContext)
         {
-            Func<IAuthorizationPolicy, bool> policyApplicator = (policyHandler) =>
+            Func<IAuthorizationPolicy, bool> policyChecker = (policyHandler) =>
                 {
                     return policyHandler.ApplyPolicy(new ApplyPolicyArgs()
                                                             {
                                                             }).IsAuthorized;
                 };
 
-            return IsAuthorized(descriptor, policyApplicator);
+            return IsAuthorized(descriptor, policyChecker);
         }
         
         /// <summary>
