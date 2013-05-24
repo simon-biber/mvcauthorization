@@ -36,7 +36,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
             // No roles means not secured by role
             bool isAuthorized = descriptor.Roles == null || descriptor.Roles.Count() == 0;
 
-            if (descriptor.Roles != null)
+            if (!isAuthorized)      // isAuthorized == true means there were no roles or they were NULL
             {
                 foreach (var role in descriptor.Roles)
                 {
@@ -105,7 +105,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
                     }
                     else
                     {
-                        throw new Exception("Error");
+                        throw new Exception("Policy resolution type is invalid");
                     }
                 });
 
