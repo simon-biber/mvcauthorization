@@ -81,7 +81,7 @@ namespace MvcAuthorization.Configuration
         /// <returns></returns>
         protected override object GetElementKey(ConfigurationElement element)
         {
-            return ((PolicyAuthorizationConfigurationElement)element).Type;
+            return ((PolicyAuthorizationConfigurationElement)element).Name;
         }
     }
 }

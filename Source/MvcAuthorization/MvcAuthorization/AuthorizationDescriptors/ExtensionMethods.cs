@@ -87,11 +87,11 @@ namespace MvcAuthorization.AuthorizationDescriptors
             // Get the handler type from the cache
             Type handlerType = _policyHandlerTypeCache.GetOrAdd(policyAuthorizationDescriptor, (descriptor) =>
                 {
-                    if (string.Equals(descriptor.Type, "TypeName", StringComparison.OrdinalIgnoreCase))
+                    if (descriptor.LoadByTypeName)
                     {
-                        return Type.GetType(descriptor.Value);
+                        return Type.GetType(descriptor.Name);
                     }
-                    else if(string.Equals(descriptor.Type, "Name", StringComparison.OrdinalIgnoreCase))
+                    else
                     {
                         var policyHandlerInterface = typeof(IAuthorizationPolicy);
                         var policyHandlers = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
@@ -99,13 +99,9 @@ namespace MvcAuthorization.AuthorizationDescriptors
 
                         var policyAttributes = policyHandlers.Where(t => {
                                 var attribute = (PolicyMetadataAttribute)Attribute.GetCustomAttribute(t, typeof(PolicyMetadataAttribute));
-                                return attribute != null && string.Equals(attribute.Name, descriptor.Value);                          
+                                return attribute != null && string.Equals(attribute.Name, descriptor.Name);                          
                         });
                         return policyAttributes.FirstOrDefault();
-                    }
-                    else
-                    {
-                        throw new Exception("Policy resolution type is invalid");
                     }
                 });
 

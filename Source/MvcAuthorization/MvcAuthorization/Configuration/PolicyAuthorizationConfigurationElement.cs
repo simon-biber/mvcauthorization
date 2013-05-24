@@ -8,29 +8,29 @@ namespace MvcAuthorization.Configuration
 {
     public class PolicyAuthorizationConfigurationElement: ConfigurationElement
     {
-        [ConfigurationProperty("type", IsRequired=true)]
-        public string Type
+        [ConfigurationProperty("loadByTypeName", IsRequired=false, DefaultValue=false)]
+        public bool LoadByTypeName
         {
             get
             {
-                return (string)this["type"];
+                return (bool)this["loadByTypeName"];
             }
             set
             {
-                this["type"] = value;
+                this["loadByTypeName"] = value;
             }
         }
 
-        [ConfigurationProperty("value", IsRequired=true)]
-        public string Value
+        [ConfigurationProperty("name", IsRequired=true)]
+        public string Name
         {
             get
             {
-                return (string)this["value"];
+                return (string)this["name"];
             }
             set
             {
-                this["value"] = value;
+                this["name"] = value;
             }
         }
     }

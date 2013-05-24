@@ -52,7 +52,7 @@ namespace MvcAuthorization
 
                 foreach (PolicyAuthorizationConfigurationElement policyHandlerElement in policyHandlerCollection)
                 {
-                    policyDescriptors.Add(new PolicyAuthorizationDescriptor(policyHandlerElement.Type, policyHandlerElement.Value));
+                    policyDescriptors.Add(new PolicyAuthorizationDescriptor(policyHandlerElement.LoadByTypeName, policyHandlerElement.Name));
                 }
                 return policyDescriptors;
             }

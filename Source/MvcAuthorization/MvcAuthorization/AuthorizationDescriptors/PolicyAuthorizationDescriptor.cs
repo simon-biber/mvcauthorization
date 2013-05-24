@@ -7,10 +7,10 @@ namespace MvcAuthorization.AuthorizationDescriptors
 {
     public class PolicyAuthorizationDescriptor
     {
-        public PolicyAuthorizationDescriptor(string type, string value)
+        public PolicyAuthorizationDescriptor(bool loadByTypeName, string name)
         {
-            Type = type ?? string.Empty;
-            Value = value ?? string.Empty;
+            LoadByTypeName = loadByTypeName;
+            Name = name ?? string.Empty;
         }
 
         public override int GetHashCode()
@@ -18,8 +18,8 @@ namespace MvcAuthorization.AuthorizationDescriptors
             unchecked
             {
                 int x = 17;
-                x = x * 23 + Type.GetHashCode();
-                x = x * 23 + Value.GetHashCode();
+                x = x * 23 + LoadByTypeName.GetHashCode();
+                x = x * 23 + Name.GetHashCode();
                 return x;
             }
         }
@@ -31,10 +31,10 @@ namespace MvcAuthorization.AuthorizationDescriptors
                 return false;
             }
             PolicyAuthorizationDescriptor x = (PolicyAuthorizationDescriptor)obj;
-            return x.Type == Type && x.Value == Value;
+            return x.LoadByTypeName == LoadByTypeName && x.Name == Name;
         }
 
-        public string Type { get; private set; }
-        public string Value { get; private set; }
+        public bool LoadByTypeName { get; private set; }
+        public string Name { get; private set; }
     }
 }
