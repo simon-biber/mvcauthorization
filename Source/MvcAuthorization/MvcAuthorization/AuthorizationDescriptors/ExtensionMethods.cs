@@ -21,12 +21,12 @@ namespace MvcAuthorization.AuthorizationDescriptors
         private static ConcurrentDictionary<Type, IAuthorizationPolicy> _policyHandlerCache = new ConcurrentDictionary<Type, IAuthorizationPolicy>();
 
         /// <summary>
-        /// Determines whether or not the user is authorized based on the descriptor
+        /// 
         /// </summary>
         /// <param name="descriptor"></param>
-        /// <param name="actionExecutingContext"></param>
+        /// <param name="policyApplicator"></param>
         /// <returns></returns>
-        public static bool IsAuthorized(this BaseAuthorizationDescriptor descriptor, ActionExecutingContext actionExecutingContext)
+        private static bool IsAuthorized(BaseAuthorizationDescriptor descriptor, Func<IAuthorizationPolicy, bool> policyApplicator)
         {
             if (descriptor == null)
             {
@@ -59,9 +59,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
                     if (policyHandler != null)
                     {
                         // Handle via policy
-                        isAuthorized = policyHandler.ApplyPolicy(new ApplyPolicyArgs()
-                                                                    {
-                                                                    }).IsAuthorized;
+                        isAuthorized = policyApplicator.Invoke(policyHandler);
 
                         if (!isAuthorized)
                         {
@@ -70,9 +68,27 @@ namespace MvcAuthorization.AuthorizationDescriptors
                         }
                     }
                 }
-                
+
             }
             return isAuthorized;
+        }
+
+        /// <summary>
+        /// Determines whether or not the user is authorized based on the descriptor
+        /// </summary>
+        /// <param name="descriptor"></param>
+        /// <param name="actionExecutingContext"></param>
+        /// <returns></returns>
+        public static bool IsAuthorized(this BaseAuthorizationDescriptor descriptor, ActionExecutingContext actionExecutingContext)
+        {
+            Func<IAuthorizationPolicy, bool> policyApplicator = (policyHandler) =>
+                {
+                    return policyHandler.ApplyPolicy(new ApplyPolicyArgs()
+                                                            {
+                                                            }).IsAuthorized;
+                };
+
+            return IsAuthorized(descriptor, policyApplicator);
         }
         
         /// <summary>
