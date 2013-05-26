@@ -34,7 +34,7 @@ namespace MvcAuthorization.Web.Test
             AreaRegistration.RegisterAllAreas();
             DependencyResolver.SetResolver(new MvcDependencyResolver());
             GlobalFilters.Filters.Add(new AuthorizeFilter());
-            AuthorizationProvider.InitializeTypeResolver(type => DependencyResolver.Current.GetService(type));
+            AuthorizationProvider.ResolveDependenciesUsing(type => DependencyResolver.Current.GetService(type));
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);

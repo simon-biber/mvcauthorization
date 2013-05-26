@@ -266,7 +266,7 @@ namespace MvcAuthorization
         /// Initializes a type resolver, which returns a concrete instance of an object based on type.
         /// </summary>
         /// <param name="typeResolver"></param>
-        public static void InitializeTypeResolver(Func<Type, object> typeResolver)
+        public static void ResolveDependenciesUsing(Func<Type, object> typeResolver)
         {
             _typeResolver = typeResolver;
         }
