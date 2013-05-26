@@ -12,6 +12,12 @@ namespace MvcAuthorization
 {
     public class ConfigurationAuthorizationProvider : AuthorizationProvider
     {
+        protected override GlobalAuthorizationDescriptor LoadGlobalAuthorizationDescriptor()
+        {
+            var policyAuthorizationDescriptors = AuthorizationConfiguration.PolicyData.Select(pd => new PolicyAuthorizationDescriptor(pd.Ignore, pd.Name));
+            return new GlobalAuthorizationDescriptor(null, policyAuthorizationDescriptors);
+        }
+
         protected override AreaAuthorizationDescriptor LoadAreaAuthorizationDescriptor(string areaName)
         {
             AreaAuthorizationConfigurationElement element = AuthorizationConfiguration.AreaMappings.Where(a => string.Equals(a.Area, (areaName ?? ""), StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
@@ -52,7 +58,7 @@ namespace MvcAuthorization
 
                 foreach (PolicyAuthorizationConfigurationElement policyHandlerElement in policyHandlerCollection)
                 {
-                    policyDescriptors.Add(new PolicyAuthorizationDescriptor(policyHandlerElement.LoadByTypeName, policyHandlerElement.Name));
+                    policyDescriptors.Add(new PolicyAuthorizationDescriptor(policyHandlerElement.Ignore, policyHandlerElement.Name));
                 }
                 return policyDescriptors;
             }

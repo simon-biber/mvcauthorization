@@ -9,6 +9,6 @@ namespace MvcAuthorization.Policy
 {
     public class ApplyPolicyArgs
     {
-        
+        public IEnumerable<string> RequiredRoles { get; set; }
     }
 }

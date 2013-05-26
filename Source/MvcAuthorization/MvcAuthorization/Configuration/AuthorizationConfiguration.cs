@@ -46,5 +46,33 @@ namespace MvcAuthorization.Configuration
                 return this["areas"] as AreaAuthorizationConfigurationCollection;
             }
         }
+
+        public static PolicyAuthorizationConfigurationCollection PolicyData
+        {
+            get
+            {
+                PolicyAuthorizationConfigurationCollection result;
+                if (Section == null || Section.Policies == null)
+                {
+                    result = new PolicyAuthorizationConfigurationCollection();
+                }
+                else
+                {
+                    result = Section.Policies;
+                }
+
+                return result;
+            }
+        }    
+
+        [ConfigurationProperty("policies")]
+        [ConfigurationCollection(typeof(PolicyAuthorizationConfigurationCollection), AddItemName = "policy")]
+        public PolicyAuthorizationConfigurationCollection Policies
+        {
+            get
+            {
+                return this["policies"] as PolicyAuthorizationConfigurationCollection;
+            }
+        }
     }
 }

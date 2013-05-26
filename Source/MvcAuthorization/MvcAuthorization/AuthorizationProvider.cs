@@ -15,6 +15,16 @@ namespace MvcAuthorization
         #region Private Backing Variables
 
         /// <summary>
+        /// 
+        /// </summary>
+        protected static GlobalAuthorizationDescriptor _globalAuthorizationDescriptor = null;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected static object _globalAuthorizationDescriptorLock = new object();
+
+        /// <summary>
         /// Cache for area authorizations
         /// </summary>
         protected static ConcurrentDictionary<string, AreaAuthorizationDescriptor> _areaAuthorizationDescriptorCache = new ConcurrentDictionary<string, AreaAuthorizationDescriptor>();
@@ -47,6 +57,12 @@ namespace MvcAuthorization
         #endregion
 
         #region Abstract Members
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        protected abstract GlobalAuthorizationDescriptor LoadGlobalAuthorizationDescriptor();
 
         /// <summary>
         /// 
@@ -117,6 +133,26 @@ namespace MvcAuthorization
         }
 
         /// <summary>
+        /// Get a GlobalAuthorizationDescriptor from cache (or backing store if not cached yet)
+        /// </summary>
+        /// <param name="controllerName"></param>
+        /// <returns></returns>
+        protected GlobalAuthorizationDescriptor GetGlobalAuthorizationDescriptor()
+        {
+            if (_globalAuthorizationDescriptor == null)
+            {
+                lock (_globalAuthorizationDescriptorLock)
+                {
+                    if (_globalAuthorizationDescriptor == null)
+                    {
+                        _globalAuthorizationDescriptor = LoadGlobalAuthorizationDescriptor();
+                    }
+                }
+            }
+            return _globalAuthorizationDescriptor;
+        }
+
+        /// <summary>
         /// Get a AreaAuthorizationDescriptor from cache (or backing store if not cached yet)
         /// </summary>
         /// <param name="controllerName"></param>
@@ -159,12 +195,34 @@ namespace MvcAuthorization
                     });
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="actionExecutingContext"></param>
+        /// <param name="global"></param>
+        /// <param name="area"></param>
+        /// <param name="controller"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        protected bool CheckIsAuthorized(ActionExecutingContext actionExecutingContext, GlobalAuthorizationDescriptor global, AreaAuthorizationDescriptor area, ControllerAuthorizationDescriptor controller, ActionAuthorizationDescriptor action)
+        {
+            var actionResult = action.IsAuthorized(actionExecutingContext, null);
+            var controllerResult = controller.IsAuthorized(actionExecutingContext, actionResult.PoliciesToSkip);
+            var areaResult = area.IsAuthorized(actionExecutingContext, controllerResult.PoliciesToSkip);
+            var globalResult = global.IsAuthorized(actionExecutingContext, areaResult.PoliciesToSkip);
+
+            return actionResult.IsAuthorized && controllerResult.IsAuthorized && areaResult.IsAuthorized && globalResult.IsAuthorized;
+        }
+
         #endregion
 
         #region IAuthorizationProvider Members
 
         public bool IsAuthorizedAction(string controllerName, string actionName, string areaName = null, RouteValueDictionary routeValueDictionary = null)
         {
+            // Get the global item
+            GlobalAuthorizationDescriptor global = GetGlobalAuthorizationDescriptor();
+
             // Get the area item
             AreaAuthorizationDescriptor area = GetAreaAuthorizationDescriptor(areaName);
 
@@ -175,7 +233,7 @@ namespace MvcAuthorization
             ActionAuthorizationDescriptor action = GetActionAuthorizationDescriptor(controllerName, actionName, areaName);
 
             // Return auth
-            return area.IsAuthorized(null) && controller.IsAuthorized(null) && action.IsAuthorized(null);
+            return CheckIsAuthorized(null, global, area, controller, action);
         }
 
         public bool IsActionRequestAuthorized(ActionExecutingContext actionExecutingContext)
@@ -184,6 +242,9 @@ namespace MvcAuthorization
             string actionName = actionExecutingContext.ActionDescriptor.ActionName;
             string controllerName = actionExecutingContext.ActionDescriptor.ControllerDescriptor.ControllerName;
 
+            // Get the global item
+            GlobalAuthorizationDescriptor global = GetGlobalAuthorizationDescriptor();
+
             // Get the area item
             AreaAuthorizationDescriptor area = GetAreaAuthorizationDescriptor(areaName);
 
@@ -194,7 +255,7 @@ namespace MvcAuthorization
             ActionAuthorizationDescriptor action = GetActionAuthorizationDescriptor(controllerName, actionName, areaName);
 
             // Return auth
-            return area.IsAuthorized(actionExecutingContext) && controller.IsAuthorized(actionExecutingContext) && action.IsAuthorized(actionExecutingContext);
+            return CheckIsAuthorized(actionExecutingContext, global, area, controller, action);
         }
 
         #endregion

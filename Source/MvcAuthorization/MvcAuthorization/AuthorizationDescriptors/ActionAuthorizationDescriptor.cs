@@ -9,12 +9,24 @@ namespace MvcAuthorization.AuthorizationDescriptors
     {
         public ActionAuthorizationDescriptor(string actionName, string controllerName, string areaName, List<string> roles, IEnumerable<PolicyAuthorizationDescriptor> policyAuthorizationDescriptors)
         {
-            Roles = roles;
-            PolicyAuthorizationDescriptors = policyAuthorizationDescriptors;
+            if (roles != null)
+            {
+                Roles = roles.AsReadOnly();
+            }
+
+            if (policyAuthorizationDescriptors != null)
+            {
+                PolicyAuthorizationDescriptors = policyAuthorizationDescriptors.ToList().AsReadOnly();
+            }
+
             ControllerName = controllerName;
             ActionName = actionName;
             AreaName = areaName;
         }
+
+        public string AreaName { get; private set; }
+        public string ActionName { get; private set; }
+        public string ControllerName { get; private set; }
 
     }
 }

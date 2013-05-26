@@ -7,9 +7,9 @@ namespace MvcAuthorization.AuthorizationDescriptors
 {
     public class PolicyAuthorizationDescriptor
     {
-        public PolicyAuthorizationDescriptor(bool loadByTypeName, string name)
+        public PolicyAuthorizationDescriptor(bool ignore, string name)
         {
-            LoadByTypeName = loadByTypeName;
+            Ignore = ignore;
             Name = name ?? string.Empty;
         }
 
@@ -18,7 +18,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
             unchecked
             {
                 int x = 17;
-                x = x * 23 + LoadByTypeName.GetHashCode();
+                x = x * 23 + Ignore.GetHashCode();
                 x = x * 23 + Name.GetHashCode();
                 return x;
             }
@@ -31,10 +31,10 @@ namespace MvcAuthorization.AuthorizationDescriptors
                 return false;
             }
             PolicyAuthorizationDescriptor x = (PolicyAuthorizationDescriptor)obj;
-            return x.LoadByTypeName == LoadByTypeName && x.Name == Name;
+            return x.Ignore == Ignore && x.Name == Name;
         }
 
-        public bool LoadByTypeName { get; private set; }
+        public bool Ignore { get; private set; }
         public string Name { get; private set; }
     }
 }

@@ -51,6 +51,7 @@
     <Compile Include="AuthorizationDescriptors\AreaAuthorizationDescriptor.cs" />
     <Compile Include="AuthorizationDescriptors\BaseAuthorizationDescriptor.cs" />
     <Compile Include="AuthorizationDescriptors\ExtensionMethods.cs" />
+    <Compile Include="AuthorizationDescriptors\GlobalAuthorizationDescriptor.cs" />
     <Compile Include="AuthorizationDescriptors\PolicyAuthorizationDescriptor.cs" />
     <Compile Include="AuthorizationProvider.cs" />
     <Compile Include="AuthorizeFilter.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Html\Helpers.cs" />
     <Compile Include="IAuthorizationProvider.cs" />
     <Compile Include="Policies\DenyAnonymousAccessPolicy.cs" />
+    <Compile Include="Policies\DenyNoRoleAccessPolicy.cs" />
     <Compile Include="Policies\LocalOnlyPolicy.cs" />
     <Compile Include="Policies\SecureConnectionOnlyPolicy.cs" />
     <Compile Include="Policy\ApplyActionPolicyArgs.cs" />

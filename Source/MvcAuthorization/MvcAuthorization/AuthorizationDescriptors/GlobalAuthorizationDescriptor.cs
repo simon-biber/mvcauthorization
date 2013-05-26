@@ -5,9 +5,9 @@ using System.Text;
 
 namespace MvcAuthorization.AuthorizationDescriptors
 {
-    public class AreaAuthorizationDescriptor : BaseAuthorizationDescriptor
+    public class GlobalAuthorizationDescriptor : BaseAuthorizationDescriptor
     {
-        public AreaAuthorizationDescriptor(string areaName, List<string> roles, IEnumerable<PolicyAuthorizationDescriptor> policyAuthorizationDescriptors)
+        public GlobalAuthorizationDescriptor(List<string> roles, IEnumerable<PolicyAuthorizationDescriptor> policyAuthorizationDescriptors)
         {
             if (roles != null)
             {
@@ -18,10 +18,6 @@ namespace MvcAuthorization.AuthorizationDescriptors
             {
                 PolicyAuthorizationDescriptors = policyAuthorizationDescriptors.ToList().AsReadOnly();
             }
-
-            AreaName = areaName;
         }
-
-        public string AreaName { get; private set; }
     }
 }

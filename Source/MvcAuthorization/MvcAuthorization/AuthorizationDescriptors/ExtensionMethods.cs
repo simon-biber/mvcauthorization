@@ -8,6 +8,12 @@ using MvcAuthorization.Policy;
 
 namespace MvcAuthorization.AuthorizationDescriptors
 {
+    public class CheckAuthorizationResult
+    {
+        public bool IsAuthorized { get; set; }
+        public List<PolicyAuthorizationDescriptor> PoliciesToSkip { get; set; }
+    }
+
     public static class ExtensionMethods
     {
         /// <summary>
@@ -20,58 +26,6 @@ namespace MvcAuthorization.AuthorizationDescriptors
         /// </summary>
         private static ConcurrentDictionary<Type, IAuthorizationPolicy> _policyHandlerCache = new ConcurrentDictionary<Type, IAuthorizationPolicy>();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="descriptor"></param>
-        /// <param name="policyChecker"></param>
-        /// <returns></returns>
-        private static bool IsAuthorized(BaseAuthorizationDescriptor descriptor, Func<IAuthorizationPolicy, bool> policyChecker)
-        {
-            if (descriptor == null)
-            {
-                return true;
-            }
-
-            // No roles means not secured by role
-            bool isAuthorized = descriptor.Roles == null || descriptor.Roles.Count() == 0;
-
-            if (!isAuthorized)      // isAuthorized == true means there were no roles or they were NULL
-            {
-                foreach (var role in descriptor.Roles)
-                {
-                    if (System.Threading.Thread.CurrentPrincipal.IsInRole(role))
-                    {
-                        // True if one role matches
-                        isAuthorized = true;
-                        break;
-                    }
-                }
-            }
-
-            // Only invoke the policy handler if role is valid
-            if (isAuthorized && descriptor.PolicyAuthorizationDescriptors != null)
-            {
-                foreach (var policyAuthorizationDescriptor in descriptor.PolicyAuthorizationDescriptors)
-                {
-                    IAuthorizationPolicy policyHandler = GetPolicyHandlerInstance(policyAuthorizationDescriptor);
-
-                    if (policyHandler != null)
-                    {
-                        // Handle via policy
-                        isAuthorized = policyChecker.Invoke(policyHandler);
-
-                        if (!isAuthorized)
-                        {
-                            // Stop checking if one fails
-                            break;
-                        }
-                    }
-                }
-
-            }
-            return isAuthorized;
-        }
 
         /// <summary>
         /// Determines whether or not the user is authorized based on the descriptor
@@ -79,16 +33,94 @@ namespace MvcAuthorization.AuthorizationDescriptors
         /// <param name="descriptor"></param>
         /// <param name="actionExecutingContext"></param>
         /// <returns></returns>
-        public static bool IsAuthorized(this BaseAuthorizationDescriptor descriptor, ActionExecutingContext actionExecutingContext)
+        public static CheckAuthorizationResult IsAuthorized(this BaseAuthorizationDescriptor descriptor, ActionExecutingContext actionExecutingContext, List<PolicyAuthorizationDescriptor> policiesToIgnore)
         {
-            Func<IAuthorizationPolicy, bool> policyChecker = (policyHandler) =>
+            Func<IAuthorizationPolicy, ApplyPolicyResult> policyChecker = (policyHandler) =>
+            {
+                return policyHandler.ApplyPolicy(new ApplyPolicyArgs()
                 {
-                    return policyHandler.ApplyPolicy(new ApplyPolicyArgs()
-                                                            {
-                                                            }).IsAuthorized;
-                };
+                    RequiredRoles = descriptor.Roles
+                });
+            };
 
-            return IsAuthorized(descriptor, policyChecker);
+            return IsAuthorizedCore(descriptor, policyChecker, policiesToIgnore);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="descriptor"></param>
+        /// <param name="policyChecker"></param>
+        /// <returns></returns>
+        private static CheckAuthorizationResult IsAuthorizedCore(BaseAuthorizationDescriptor descriptor, Func<IAuthorizationPolicy, ApplyPolicyResult> policyChecker, List<PolicyAuthorizationDescriptor> policiesToIgnore)
+        {
+            CheckAuthorizationResult result = new CheckAuthorizationResult();
+            result.PoliciesToSkip = policiesToIgnore;                               // Modify the original list if passed in
+
+            if (descriptor == null)
+            {
+                result.IsAuthorized = true;
+                return result;
+            }
+
+            // No roles means not secured by role
+            result.IsAuthorized = descriptor.Roles == null || descriptor.Roles.Count() == 0;
+
+            // Validate policy first
+            if (descriptor.PolicyAuthorizationDescriptors != null && descriptor.PolicyAuthorizationDescriptors.Count() > 0)
+            {
+                // Add the policies to ignore list
+                var notExists = descriptor.PolicyAuthorizationDescriptors.Where(pd => pd.Ignore 
+                                    && (result.PoliciesToSkip == null || !result.PoliciesToSkip.Any(s => s == pd)));
+
+                if (result.PoliciesToSkip == null && notExists.Count() > 0)
+                {
+                    result.PoliciesToSkip = new List<PolicyAuthorizationDescriptor>();
+                    result.PoliciesToSkip.AddRange(notExists);
+                }
+
+                foreach (var policyAuthorizationDescriptor in descriptor.PolicyAuthorizationDescriptors)
+                {
+                    if (result.PoliciesToSkip != null && result.PoliciesToSkip.Any(pd => string.Equals(pd.Name, policyAuthorizationDescriptor.Name, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        continue;
+                    }
+
+                    IAuthorizationPolicy policyHandler = GetPolicyHandlerInstance(policyAuthorizationDescriptor);
+
+                    if (policyHandler != null)
+                    {
+                        // Handle via policy
+                        var policyResult = policyChecker.Invoke(policyHandler);
+
+                        // Short circuit if the policy must be satsified and the user is not authorized
+                        if (!policyResult.IsAuthorized)
+                        {
+                            result.IsAuthorized = false;
+                            return result;
+                        }
+                    }
+                }
+
+            }
+
+            // If we got here that means all policies were met.
+            // If we have roles check them to see if the user is allowed.
+            if (descriptor.Roles != null)
+            {
+                foreach (var role in descriptor.Roles)
+                {
+                    if (System.Threading.Thread.CurrentPrincipal.IsInRole(role))
+                    {
+                        // True if one role matches
+                        result.IsAuthorized = true;
+                        break;
+                    }
+                }
+            }
+
+            
+            return result;
         }
         
         /// <summary>
@@ -103,22 +135,16 @@ namespace MvcAuthorization.AuthorizationDescriptors
             // Get the handler type from the cache
             Type handlerType = _policyHandlerTypeCache.GetOrAdd(policyAuthorizationDescriptor, (descriptor) =>
                 {
-                    if (descriptor.LoadByTypeName)
-                    {
-                        return Type.GetType(descriptor.Name);
-                    }
-                    else
-                    {
-                        var policyHandlerInterface = typeof(IAuthorizationPolicy);
-                        var policyHandlers = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
-                                                        .Where(t => policyHandlerInterface.IsAssignableFrom(t) && !t.IsAbstract && t.IsClass && t.IsPublic && !t.IsGenericType);
+                    var policyHandlerInterface = typeof(IAuthorizationPolicy);
+                    var policyHandlers = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+                                                    .Where(t => policyHandlerInterface.IsAssignableFrom(t) && !t.IsAbstract && t.IsClass && t.IsPublic && !t.IsGenericType);
 
-                        var policyAttributes = policyHandlers.Where(t => {
-                                var attribute = (PolicyMetadataAttribute)Attribute.GetCustomAttribute(t, typeof(PolicyMetadataAttribute));
-                                return attribute != null && string.Equals(attribute.Name, descriptor.Name, StringComparison.OrdinalIgnoreCase);                          
-                        });
-                        return policyAttributes.FirstOrDefault();
-                    }
+                    var policyAttributes = policyHandlers.Where(t =>
+                    {
+                        var attribute = (PolicyMetadataAttribute)Attribute.GetCustomAttribute(t, typeof(PolicyMetadataAttribute));
+                        return attribute != null && string.Equals(attribute.Name, descriptor.Name, StringComparison.OrdinalIgnoreCase);
+                    });
+                    return policyAttributes.FirstOrDefault();
                 });
 
             // Resolve the instance using the IOC container if specified

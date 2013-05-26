@@ -8,16 +8,16 @@ namespace MvcAuthorization.Configuration
 {
     public class PolicyAuthorizationConfigurationElement: ConfigurationElement
     {
-        [ConfigurationProperty("loadByTypeName", IsRequired=false, DefaultValue=false)]
-        public bool LoadByTypeName
+        [ConfigurationProperty("ignore", IsRequired = false, DefaultValue = false)]
+        public bool Ignore
         {
             get
             {
-                return (bool)this["loadByTypeName"];
+                return (bool)this["ignore"];
             }
             set
             {
-                this["loadByTypeName"] = value;
+                this["ignore"] = value;
             }
         }
 

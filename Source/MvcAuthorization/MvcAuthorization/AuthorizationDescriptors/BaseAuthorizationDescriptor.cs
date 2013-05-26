@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.ObjectModel;
 
 namespace MvcAuthorization.AuthorizationDescriptors
 {
     public abstract class BaseAuthorizationDescriptor
     {
-        public IEnumerable<string> Roles { get; set; }
-        public IEnumerable<PolicyAuthorizationDescriptor> PolicyAuthorizationDescriptors { get; set; }
-        public string AreaName { get; set; }
-        public string ActionName { get; set; }
-        public string ControllerName { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public ReadOnlyCollection<string> Roles { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ReadOnlyCollection<PolicyAuthorizationDescriptor> PolicyAuthorizationDescriptors { get; set; }
     }
 }
