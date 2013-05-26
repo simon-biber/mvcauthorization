@@ -71,7 +71,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
             {
                 // Add the policies to ignore list
                 var notExists = descriptor.PolicyAuthorizationDescriptors.Where(pd => pd.Ignore 
-                                    && (result.PoliciesToSkip == null || !result.PoliciesToSkip.Any(s => s == pd)));
+                                    && (result.PoliciesToSkip == null || !result.PoliciesToSkip.Any(s => string.Equals(pd.Name, s.Name, StringComparison.OrdinalIgnoreCase))));
 
                 if (result.PoliciesToSkip == null && notExists.Count() > 0)
                 {
