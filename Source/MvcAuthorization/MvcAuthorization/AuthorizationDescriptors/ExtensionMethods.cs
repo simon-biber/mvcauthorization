@@ -115,7 +115,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
 
                         var policyAttributes = policyHandlers.Where(t => {
                                 var attribute = (PolicyMetadataAttribute)Attribute.GetCustomAttribute(t, typeof(PolicyMetadataAttribute));
-                                return attribute != null && string.Equals(attribute.Name, descriptor.Name);                          
+                                return attribute != null && string.Equals(attribute.Name, descriptor.Name, StringComparison.OrdinalIgnoreCase);                          
                         });
                         return policyAttributes.FirstOrDefault();
                     }

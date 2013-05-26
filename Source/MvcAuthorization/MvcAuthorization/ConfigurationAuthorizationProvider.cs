@@ -14,23 +14,23 @@ namespace MvcAuthorization
     {
         protected override AreaAuthorizationDescriptor LoadAreaAuthorizationDescriptor(string areaName)
         {
-            AreaAuthorizationConfigurationElement element = AuthorizationConfiguration.AreaMappings.Where(a => a.Area == (areaName ?? "")).FirstOrDefault();
+            AreaAuthorizationConfigurationElement element = AuthorizationConfiguration.AreaMappings.Where(a => string.Equals(a.Area, (areaName ?? ""), StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
             return new AreaAuthorizationDescriptor(areaName, element != null && !string.IsNullOrEmpty(element.Roles) ? element.Roles.Split(',').ToList() : null, LoadPolicyHandlerFromConfig(element != null ? element.Policies : null));
         }
 
         protected override ControllerAuthorizationDescriptor LoadControllerAuthorizationDescriptor(string controllerName, string areaName)
         {
-            ControllerAuthorizationConfigurationElement element = AuthorizationConfiguration.AreaMappings.Where(a => a.Area == (areaName ?? "")).SelectMany(cm => cm.ControllerAuthorizationMappings.Where(e => e.Controller == controllerName)).FirstOrDefault();
+            ControllerAuthorizationConfigurationElement element = AuthorizationConfiguration.AreaMappings.Where(a => string.Equals(a.Area, (areaName ?? ""), StringComparison.OrdinalIgnoreCase)).SelectMany(cm => cm.ControllerAuthorizationMappings.Where(e => string.Equals(e.Controller, controllerName, StringComparison.OrdinalIgnoreCase))).FirstOrDefault();
             return new ControllerAuthorizationDescriptor(controllerName, areaName, element != null && !string.IsNullOrEmpty(element.Roles) ? element.Roles.Split(',').ToList() : null, LoadPolicyHandlerFromConfig(element != null ? element.Policies : null));
         }
 
         protected override ActionAuthorizationDescriptor LoadActionAuthorizationDescriptor(string controllerName, string actionName, string areaName)
         {
-            ControllerAuthorizationConfigurationElement controllerElement = AuthorizationConfiguration.AreaMappings.Where(a => a.Area == (areaName ?? "")).SelectMany(cm => cm.ControllerAuthorizationMappings.Where(e => e.Controller == controllerName)).FirstOrDefault();
+            ControllerAuthorizationConfigurationElement controllerElement = AuthorizationConfiguration.AreaMappings.Where(a => string.Equals(a.Area, (areaName ?? ""), StringComparison.OrdinalIgnoreCase)).SelectMany(cm => cm.ControllerAuthorizationMappings.Where(e => string.Equals(e.Controller, controllerName, StringComparison.OrdinalIgnoreCase))).FirstOrDefault();
 
             if (controllerElement != null)
             {
-                ActionAuthorizationConfigurationElement actionElement = controllerElement.ActionAuthorizationMappings.Where(e => e.Action == actionName).FirstOrDefault();
+                ActionAuthorizationConfigurationElement actionElement = controllerElement.ActionAuthorizationMappings.Where(e => string.Equals(e.Action, actionName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
                 if (actionElement != null)
                 {
