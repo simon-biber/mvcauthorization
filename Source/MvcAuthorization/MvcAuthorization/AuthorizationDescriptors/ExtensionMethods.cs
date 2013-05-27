@@ -17,7 +17,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
     public static class ExtensionMethods
     {
         /// <summary>
-        /// Maps a policy typeName to a type
+        /// Maps a policy descriptor to a type
         /// </summary>
         private static ConcurrentDictionary<PolicyAuthorizationDescriptor, Type> _policyHandlerTypeCache = new ConcurrentDictionary<PolicyAuthorizationDescriptor, Type>();
 
@@ -25,6 +25,11 @@ namespace MvcAuthorization.AuthorizationDescriptors
         /// Given a policy handler type, stores a cached instance for this thread (for cases where we are not using an IOC container for lifetime management)
         /// </summary>
         private static ConcurrentDictionary<Type, IAuthorizationPolicy> _policyHandlerCache = new ConcurrentDictionary<Type, IAuthorizationPolicy>();
+
+        /// <summary>
+        /// Holds a list of policy handler types and their metadata in the current AppDomain
+        /// </summary>
+        private static Lazy<List<Tuple<Type, PolicyMetadataAttribute>>> _policyHandlerTypeListCache = new Lazy<List<Tuple<Type, PolicyMetadataAttribute>>>(() => LoadAndCachePolicyHandlers());
 
 
         /// <summary>
@@ -70,7 +75,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
             if (descriptor.PolicyAuthorizationDescriptors != null && descriptor.PolicyAuthorizationDescriptors.Count() > 0)
             {
                 // Add the policies to ignore list
-                var notExists = descriptor.PolicyAuthorizationDescriptors.Where(pd => pd.Ignore 
+                var notExists = descriptor.PolicyAuthorizationDescriptors.Where(pd => pd.IgnoreInherited 
                                     && (result.PoliciesToSkip == null || !result.PoliciesToSkip.Any(s => string.Equals(pd.Name, s.Name, StringComparison.OrdinalIgnoreCase))));
 
                 if (result.PoliciesToSkip == null && notExists.Count() > 0)
@@ -124,27 +129,23 @@ namespace MvcAuthorization.AuthorizationDescriptors
         }
         
         /// <summary>
-        /// Instantiate the policy handler from the typeName
+        /// Gets the policy handler from the policy descriptor
         /// </summary>
         /// <param name="policyHandlerType"></param>
         /// <returns></returns>
         private static IAuthorizationPolicy GetPolicyHandlerInstance(PolicyAuthorizationDescriptor policyAuthorizationDescriptor)
         {
             Func<Type, object> typeResolver = AuthorizationProvider.GetTypeResolver();
-                           
+
             // Get the handler type from the cache
             Type handlerType = _policyHandlerTypeCache.GetOrAdd(policyAuthorizationDescriptor, (descriptor) =>
                 {
-                    var policyHandlerInterface = typeof(IAuthorizationPolicy);
-                    var policyHandlers = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
-                                                    .Where(t => policyHandlerInterface.IsAssignableFrom(t) && !t.IsAbstract && t.IsClass && t.IsPublic && !t.IsGenericType);
-
-                    var policyAttributes = policyHandlers.Where(t =>
+                    var policyAttribute = _policyHandlerTypeListCache.Value.Where(x =>
                     {
-                        var attribute = (PolicyMetadataAttribute)Attribute.GetCustomAttribute(t, typeof(PolicyMetadataAttribute));
-                        return attribute != null && string.Equals(attribute.Name, descriptor.Name, StringComparison.OrdinalIgnoreCase);
-                    });
-                    return policyAttributes.FirstOrDefault();
+                        return x.Item2 != null && string.Equals(x.Item2.Name, descriptor.Name, StringComparison.OrdinalIgnoreCase);
+                    }).FirstOrDefault();
+
+                    return policyAttribute != null ? policyAttribute.Item1 : null;
                 });
 
             // Resolve the instance using the IOC container if specified
@@ -164,6 +165,31 @@ namespace MvcAuthorization.AuthorizationDescriptors
                                                     return (IAuthorizationPolicy)Activator.CreateInstance(type);
                                                 })
                                         : null;
+        }
+
+        /// <summary>
+        /// Builds a list of policy handler types in the current AppDomain and retrieves their metadata.
+        /// </summary>
+        /// <returns></returns>
+        private static List<Tuple<Type, PolicyMetadataAttribute>> LoadAndCachePolicyHandlers()
+        {
+            List<Tuple<Type, PolicyMetadataAttribute>> result = new List<Tuple<Type, PolicyMetadataAttribute>>();
+
+            var policyHandlerTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+                                                    .Where(t => typeof(IAuthorizationPolicy).IsAssignableFrom(t) && !t.IsAbstract && t.IsClass && t.IsPublic && !t.IsGenericType);
+
+            result = policyHandlerTypes
+                .Select(x => new Tuple<Type, PolicyMetadataAttribute>(x, (PolicyMetadataAttribute)Attribute.GetCustomAttribute(x, typeof(PolicyMetadataAttribute)))).ToList();
+
+            // Find duplicates and throw an error if there is more than one policy handler with the same name
+            var duplicateHandlers = result.Where(x => x.Item2 != null).Select(x => x.Item2).GroupBy(x => x.Name).Where(x => x.Count() > 1);
+
+            if (duplicateHandlers.Count() > 0)
+            {
+                throw new ApplicationException(string.Format("Policy names must be unique. The following policy name(s) were found more than once: {0}", string.Join(", ", duplicateHandlers.Select(g => g.Key))));
+            }
+
+            return result;
         }
     }
 }

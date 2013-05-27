@@ -8,16 +8,16 @@ namespace MvcAuthorization.Configuration
 {
     public class PolicyAuthorizationConfigurationElement: ConfigurationElement
     {
-        [ConfigurationProperty("ignore", IsRequired = false, DefaultValue = false)]
-        public bool Ignore
+        [ConfigurationProperty("ignoreInherited", IsRequired = false, DefaultValue = false)]
+        public bool IgnoreInherited
         {
             get
             {
-                return (bool)this["ignore"];
+                return (bool)this["ignoreInherited"];
             }
             set
             {
-                this["ignore"] = value;
+                this["ignoreInherited"] = value;
             }
         }
 

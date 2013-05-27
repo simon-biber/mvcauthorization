@@ -14,7 +14,7 @@ namespace MvcAuthorization
     {
         protected override GlobalAuthorizationDescriptor LoadGlobalAuthorizationDescriptor()
         {
-            var policyAuthorizationDescriptors = AuthorizationConfiguration.PolicyData.Select(pd => new PolicyAuthorizationDescriptor(pd.Ignore, pd.Name));
+            var policyAuthorizationDescriptors = AuthorizationConfiguration.PolicyData.Select(pd => new PolicyAuthorizationDescriptor(pd.IgnoreInherited, pd.Name));
             return new GlobalAuthorizationDescriptor(null, policyAuthorizationDescriptors);
         }
 
@@ -58,7 +58,7 @@ namespace MvcAuthorization
 
                 foreach (PolicyAuthorizationConfigurationElement policyHandlerElement in policyHandlerCollection)
                 {
-                    policyDescriptors.Add(new PolicyAuthorizationDescriptor(policyHandlerElement.Ignore, policyHandlerElement.Name));
+                    policyDescriptors.Add(new PolicyAuthorizationDescriptor(policyHandlerElement.IgnoreInherited, policyHandlerElement.Name));
                 }
                 return policyDescriptors;
             }

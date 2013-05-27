@@ -7,9 +7,9 @@ namespace MvcAuthorization.AuthorizationDescriptors
 {
     public class PolicyAuthorizationDescriptor
     {
-        public PolicyAuthorizationDescriptor(bool ignore, string name)
+        public PolicyAuthorizationDescriptor(bool ignoreInherited, string name)
         {
-            Ignore = ignore;
+            IgnoreInherited = ignoreInherited;
             Name = name ?? string.Empty;
         }
 
@@ -18,7 +18,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
             unchecked
             {
                 int x = 17;
-                x = x * 23 + Ignore.GetHashCode();
+                x = x * 23 + IgnoreInherited.GetHashCode();
                 x = x * 23 + Name.GetHashCode();
                 return x;
             }
@@ -31,10 +31,10 @@ namespace MvcAuthorization.AuthorizationDescriptors
                 return false;
             }
             PolicyAuthorizationDescriptor x = (PolicyAuthorizationDescriptor)obj;
-            return x.Ignore == Ignore && x.Name == Name;
+            return x.IgnoreInherited == IgnoreInherited && x.Name == Name;
         }
 
-        public bool Ignore { get; private set; }
+        public bool IgnoreInherited { get; private set; }
         public string Name { get; private set; }
     }
 }
