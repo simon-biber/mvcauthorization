@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcAuthorization", "MvcAuthorization\MvcAuthorization.csproj", "{C2615672-1194-4ECF-8215-9B2C6827C81B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcAuthorization.Web.Test", "MvcAuthorization.Web.Test\MvcAuthorization.Web.Test.csproj", "{5A758F7E-BD22-4D08-8DB0-909448730BB9}"
