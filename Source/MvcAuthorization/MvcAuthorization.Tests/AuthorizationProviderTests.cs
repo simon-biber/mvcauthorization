@@ -36,7 +36,7 @@ namespace MvcAuthorization.Tests
 
         [Test]
         [Description("Ensures that a user is denied access if they do not have the required role")]
-        public void Should_Deny_Access_If_Not_In_Role()
+        public void Ensure_Deny_Access_If_Not_In_Role()
         {
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture("Admin", null);
 
@@ -51,7 +51,7 @@ namespace MvcAuthorization.Tests
 
         [Test]
         [Description("Ensures that a user is granted access if they have the required role")]
-        public void Should_Grant_Access_If_In_Role()
+        public void Ensure_Grant_Access_If_In_Role()
         {
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture("Admin", null);
 
@@ -60,7 +60,22 @@ namespace MvcAuthorization.Tests
 
             bool isAuthorized = authorizationProvider.IsAuthorizedAction("Home", "Index");
 
-            // Not authorized
+            // Authorized
+            Assert.IsTrue(isAuthorized);
+        }
+
+        [Test]
+        [Description("Ensures that role checking is case insensitive")]
+        public void Ensure_Role_Check_Is_Case_Insensitive()
+        {
+            IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture("ADMIN", null);
+
+            // User is a non-admin
+            SetPrincipal(new string[] { "admin" });
+
+            bool isAuthorized = authorizationProvider.IsAuthorizedAction("Home", "Index");
+
+            // Authorized
             Assert.IsTrue(isAuthorized);
         }
 
@@ -70,7 +85,7 @@ namespace MvcAuthorization.Tests
 
         [Test]
         [Description("Ensures that a user is granted access if the policy allows it")]
-        public void Should_Grant_Access_If_Policy_Satisfied()
+        public void Ensure_Grant_Access_If_Policy_Satisfied()
         {
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture(null, new PolicyAuthorizationDescriptor(false, "TestPolicyFixture"));
             _policyFixture.IsAuthorizedResult = true;
@@ -83,7 +98,7 @@ namespace MvcAuthorization.Tests
 
         [Test]
         [Description("Ensures that a user is denied access if the policy does not allow it")]
-        public void Should_Deny_Access_If_Policy_Not_Satisfied()
+        public void Ensure_Deny_Access_If_Policy_Not_Satisfied()
         {
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture(null, new PolicyAuthorizationDescriptor(false, "TestPolicyFixture"));
             _policyFixture.IsAuthorizedResult = false;
@@ -94,13 +109,24 @@ namespace MvcAuthorization.Tests
             Assert.IsFalse(isAuthorized);
         }
 
+        [Test]
+        [Description("Ensures that policy name checking is case insensitive")]
+        public void Ensure_Policy_Check_Is_Case_Insensitive()
+        {
+            IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture(null, new PolicyAuthorizationDescriptor(false, "TESTPOLICYFIXTURE"));
+            _policyFixture.IsAuthorizedResult = true;
+            _policyFixture.IsPolicyApplied = false;
+            bool isAuthorized = authorizationProvider.IsAuthorizedAction("Home", "Index");
+            Assert.IsTrue(_policyFixture.IsPolicyApplied);
+        }
+
         #endregion
 
         #region Role and policy tests
 
         [Test]
         [Description("Ensures that a user is granted access only if the policy and role allow it")]
-        public void Should_Grant_Access_Only_If_Role_And_Policy_Satisfied()
+        public void Ensure_Grant_Access_Only_If_Role_And_Policy_Satisfied()
         {
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture("Admin", new PolicyAuthorizationDescriptor(false, "TestPolicyFixture"));
             bool isAuthorized;
@@ -162,6 +188,25 @@ namespace MvcAuthorization.Tests
             bool isAuthorized = false;
             Assert.DoesNotThrow(() => isAuthorized = authorizationProvider.IsAuthorizedAction("Home", "Index"));
             Assert.IsTrue(isAuthorized);
+        }
+
+        [Test]
+        [Description("Ensures policy checking handles unknown policy names correctly")]
+        public void Handles_Unknown_Role_And_Policy_List()
+        {
+            IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture(null, new PolicyAuthorizationDescriptor(false, "INVALIDPOLICY"));
+
+            // Should return true
+            bool isAuthorized = false;
+            Assert.DoesNotThrow(() => isAuthorized = authorizationProvider.IsAuthorizedAction("Home", "Index"));
+            Assert.IsTrue(isAuthorized);
+
+            authorizationProvider = new AuthorizationProviderFixture("AdminRole", new PolicyAuthorizationDescriptor(false, "INVALIDPOLICY"));
+
+            // Should return true
+            isAuthorized = true;
+            Assert.DoesNotThrow(() => isAuthorized = authorizationProvider.IsAuthorizedAction("Home", "Index"));
+            Assert.IsFalse(isAuthorized);
         }
 
         #endregion

@@ -11,9 +11,16 @@ namespace MvcAuthorization.Tests.Fixtures
     public class PolicyFixture : AuthorizationPolicy
     {
         public bool IsAuthorizedResult { get; set; }
+        public bool IsPolicyApplied { get; set; }
+
+        public PolicyFixture()
+        {
+            IsPolicyApplied = false;
+        }
 
         public override ApplyPolicyResult ApplyPolicy(ApplyPolicyArgs args)
         {
+            IsPolicyApplied = true;
             return new ApplyPolicyResult() { IsAuthorized = IsAuthorizedResult };
         }
     }
