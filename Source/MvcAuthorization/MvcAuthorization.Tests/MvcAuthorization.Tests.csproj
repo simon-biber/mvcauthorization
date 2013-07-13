@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorizationProviderTests.cs" />
+    <Compile Include="Fixtures\PolicyFixture.cs" />
     <Compile Include="Fixtures\AuthorizationProviderFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
