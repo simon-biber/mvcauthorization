@@ -29,7 +29,7 @@ namespace MvcAuthorization.Tests
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture("Admin", null);
 
             // User is a non-admin
-            SetRolePrincipal(new string[] { "NonAdmin" });
+            SetPrincipal(new string[] { "NonAdmin" });
 
             bool isAuthorized = authorizationProvider.IsAuthorizedAction("Home", "Index");
 
@@ -44,7 +44,7 @@ namespace MvcAuthorization.Tests
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture("Admin", null);
 
             // User is a non-admin
-            SetRolePrincipal(new string[] { "Admin" });
+            SetPrincipal(new string[] { "Admin" });
 
             bool isAuthorized = authorizationProvider.IsAuthorizedAction("Home", "Index");
 
@@ -59,7 +59,7 @@ namespace MvcAuthorization.Tests
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture(null, null);
 
             // User is a non-admin
-            SetRolePrincipal(new string[] { "Admin" });
+            SetPrincipal(new string[] { "Admin" });
 
             // Should return true
             bool isAuthorized = false;
@@ -74,7 +74,7 @@ namespace MvcAuthorization.Tests
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture();
 
             // User is a non-admin
-            SetRolePrincipal(new string[] { "Admin" });
+            SetPrincipal(new string[] { "Admin" });
 
             // Should return true
             bool isAuthorized = false;
@@ -86,7 +86,7 @@ namespace MvcAuthorization.Tests
 
         #region Private Helpers
 
-        private void SetRolePrincipal(string[] roles)
+        private void SetPrincipal(string[] roles)
         {
             Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity("Test"), roles);
         }
