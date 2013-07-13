@@ -17,27 +17,27 @@ namespace MvcAuthorization
         /// <summary>
         /// 
         /// </summary>
-        protected static GlobalAuthorizationDescriptor _globalAuthorizationDescriptor = null;
+        protected GlobalAuthorizationDescriptor _globalAuthorizationDescriptor = null;
 
         /// <summary>
         /// 
         /// </summary>
-        protected static object _globalAuthorizationDescriptorLock = new object();
+        protected object _globalAuthorizationDescriptorLock = new object();
 
         /// <summary>
         /// Cache for area authorizations
         /// </summary>
-        protected static ConcurrentDictionary<string, AreaAuthorizationDescriptor> _areaAuthorizationDescriptorCache = new ConcurrentDictionary<string, AreaAuthorizationDescriptor>();
+        protected ConcurrentDictionary<string, AreaAuthorizationDescriptor> _areaAuthorizationDescriptorCache = new ConcurrentDictionary<string, AreaAuthorizationDescriptor>();
 
         /// <summary>
         /// Cache for controller authorizations
         /// </summary>
-        protected static ConcurrentDictionary<string, ControllerAuthorizationDescriptor> _controllerAuthorizationDescriptorCache = new ConcurrentDictionary<string, ControllerAuthorizationDescriptor>();
+        protected ConcurrentDictionary<string, ControllerAuthorizationDescriptor> _controllerAuthorizationDescriptorCache = new ConcurrentDictionary<string, ControllerAuthorizationDescriptor>();
 
         /// <summary>
         /// Cache for controller authorizations
         /// </summary>
-        protected static ConcurrentDictionary<string, ActionAuthorizationDescriptor> _actionAuthorizationDescriptorCache = new ConcurrentDictionary<string, ActionAuthorizationDescriptor>();
+        protected ConcurrentDictionary<string, ActionAuthorizationDescriptor> _actionAuthorizationDescriptorCache = new ConcurrentDictionary<string, ActionAuthorizationDescriptor>();
 
         /// <summary>
         /// Instantiate an object from a type using an IOC container
@@ -206,10 +206,10 @@ namespace MvcAuthorization
         /// <returns></returns>
         protected bool CheckIsAuthorized(ActionExecutingContext actionExecutingContext, GlobalAuthorizationDescriptor global, AreaAuthorizationDescriptor area, ControllerAuthorizationDescriptor controller, ActionAuthorizationDescriptor action)
         {
-            var actionResult = action.IsAuthorized(actionExecutingContext, null);
-            var controllerResult = controller.IsAuthorized(actionExecutingContext, actionResult.PoliciesToSkip);
-            var areaResult = area.IsAuthorized(actionExecutingContext, controllerResult.PoliciesToSkip);
-            var globalResult = global.IsAuthorized(actionExecutingContext, areaResult.PoliciesToSkip);
+            var actionResult = action.IsAuthorizedOrDefault(actionExecutingContext, null);
+            var controllerResult = controller.IsAuthorizedOrDefault(actionExecutingContext, actionResult.PoliciesToSkip);
+            var areaResult = area.IsAuthorizedOrDefault(actionExecutingContext, controllerResult.PoliciesToSkip);
+            var globalResult = global.IsAuthorizedOrDefault(actionExecutingContext, areaResult.PoliciesToSkip);
 
             return actionResult.IsAuthorized && controllerResult.IsAuthorized && areaResult.IsAuthorized && globalResult.IsAuthorized;
         }

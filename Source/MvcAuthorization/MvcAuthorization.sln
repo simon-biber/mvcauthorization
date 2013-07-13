@@ -5,9 +5,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcAuthorization", "MvcAuth
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcAuthorization.Web.Test", "MvcAuthorization.Web.Test\MvcAuthorization.Web.Test.csproj", "{5A758F7E-BD22-4D08-8DB0-909448730BB9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcAuthorization.Tests", "MvcAuthorization.Tests\MvcAuthorization.Tests.csproj", "{DCCCFEA1-9645-4A89-A539-5A05308D7C5D}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
+		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -17,6 +19,9 @@ Global
 		SccProjectUniqueName2 = MvcAuthorization\\MvcAuthorization.csproj
 		SccProjectName2 = MvcAuthorization
 		SccLocalPath2 = MvcAuthorization
+		SccProjectUniqueName3 = MvcAuthorization.Tests\\MvcAuthorization.Tests.csproj
+		SccProjectName3 = MvcAuthorization.Tests
+		SccLocalPath3 = MvcAuthorization.Tests
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +36,10 @@ Global
 		{5A758F7E-BD22-4D08-8DB0-909448730BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A758F7E-BD22-4D08-8DB0-909448730BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A758F7E-BD22-4D08-8DB0-909448730BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCCCFEA1-9645-4A89-A539-5A05308D7C5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCCCFEA1-9645-4A89-A539-5A05308D7C5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCCCFEA1-9645-4A89-A539-5A05308D7C5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCCCFEA1-9645-4A89-A539-5A05308D7C5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

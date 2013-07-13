@@ -49,8 +49,10 @@
   <ItemGroup>
     <Compile Include="AuthorizationDescriptors\ActionAuthorizationDescriptor.cs" />
     <Compile Include="AuthorizationDescriptors\AreaAuthorizationDescriptor.cs" />
+    <Compile Include="AuthorizationDescriptors\AuthorizationDescriptorExtensions.cs" />
     <Compile Include="AuthorizationDescriptors\BaseAuthorizationDescriptor.cs" />
-    <Compile Include="AuthorizationDescriptors\ExtensionMethods.cs" />
+    <Compile Include="CheckAuthorizationResult.cs" />
+    <Compile Include="Policy\PolicyHelper.cs" />
     <Compile Include="AuthorizationDescriptors\GlobalAuthorizationDescriptor.cs" />
     <Compile Include="AuthorizationDescriptors\PolicyAuthorizationDescriptor.cs" />
     <Compile Include="AuthorizationProvider.cs" />
