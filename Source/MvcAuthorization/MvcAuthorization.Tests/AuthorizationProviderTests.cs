@@ -36,7 +36,7 @@ namespace MvcAuthorization.Tests
 
         [Test]
         [Description("Ensures that a user is denied access if they do not have the required role")]
-        public void Should_Fail_If_Not_In_Role()
+        public void Should_Deny_Access_If_Not_In_Role()
         {
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture("Admin", null);
 
@@ -70,7 +70,7 @@ namespace MvcAuthorization.Tests
 
         [Test]
         [Description("Ensures that a user is granted access if the policy allows it")]
-        public void Should_Grant_Access_If_Policy_Allowed()
+        public void Should_Grant_Access_If_Policy_Satisfied()
         {
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture(null, new PolicyAuthorizationDescriptor(false, "TestPolicyFixture"));
             _policyFixture.IsAuthorizedResult = true;
@@ -83,7 +83,7 @@ namespace MvcAuthorization.Tests
 
         [Test]
         [Description("Ensures that a user is denied access if the policy does not allow it")]
-        public void Should_Deny_Access_If_Policy_Not_Allowed()
+        public void Should_Deny_Access_If_Policy_Not_Satisfied()
         {
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture(null, new PolicyAuthorizationDescriptor(false, "TestPolicyFixture"));
             _policyFixture.IsAuthorizedResult = false;
@@ -100,7 +100,7 @@ namespace MvcAuthorization.Tests
 
         [Test]
         [Description("Ensures that a user is granted access only if the policy and role allow it")]
-        public void Should_Allow_Access_Only_If_Role_And_Policy_Satisfied()
+        public void Should_Grant_Access_Only_If_Role_And_Policy_Satisfied()
         {
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture("Admin", new PolicyAuthorizationDescriptor(false, "TestPolicyFixture"));
             bool isAuthorized;
@@ -151,7 +151,7 @@ namespace MvcAuthorization.Tests
 
         [Test]
         [Description("Ensures that the authorization provider (base) can handle NULL role/descriptor lists and returns Authorized")]
-        public void Handles_Null_Role_Policy_List()
+        public void Handles_Null_Role_And_Policy_List()
         {
             IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture();
 
