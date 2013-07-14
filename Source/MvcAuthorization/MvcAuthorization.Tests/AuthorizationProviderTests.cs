@@ -120,6 +120,60 @@ namespace MvcAuthorization.Tests
             Assert.IsTrue(_policyFixture.IsPolicyApplied);
         }
 
+        [Test]
+        [Description("Ensures that policy name checking is case insensitive")]
+        public void Ensure_Policy_Ignore_Is_Honored()
+        {
+            // Setup policy on the global and action level
+            IAuthorizationProvider authorizationProvider = new AuthorizationProviderFixture(
+                new List<Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>>() 
+                { 
+                    new Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>("Index", null, null)
+                },
+                new List<Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>>() 
+                { 
+                    new Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>("Home", null, new List<PolicyAuthorizationDescriptor>() { new PolicyAuthorizationDescriptor(true, "TestPolicyFixture") })
+                }, 
+                new List<Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>>() 
+                { 
+                    new Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>(null, null, null)
+                }, 
+                new List<Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>>() 
+                { 
+                    new Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>(null, null, new List<PolicyAuthorizationDescriptor>() { new PolicyAuthorizationDescriptor(false, "TestPolicyFixture") })
+                });
+
+            _policyFixture.IsAuthorizedResult = false;
+            _policyFixture.IsPolicyApplied = false;
+            bool isAuthorized = authorizationProvider.IsAuthorizedAction("Home", "Index");
+            Assert.IsTrue(isAuthorized);
+
+
+            // Setup policy on the global and action level
+            authorizationProvider = new AuthorizationProviderFixture(
+                new List<Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>>() 
+                { 
+                    new Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>("Index", null, null)
+                },
+                new List<Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>>() 
+                { 
+                    new Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>("Home", null, null)
+                },
+                new List<Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>>() 
+                { 
+                    new Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>(null, null, null)
+                },
+                new List<Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>>() 
+                { 
+                    new Tuple<string, string[], List<AuthorizationDescriptors.PolicyAuthorizationDescriptor>>(null, null, new List<PolicyAuthorizationDescriptor>() { new PolicyAuthorizationDescriptor(false, "TestPolicyFixture") })
+                });
+
+            _policyFixture.IsAuthorizedResult = false;
+            _policyFixture.IsPolicyApplied = false;
+            isAuthorized = authorizationProvider.IsAuthorizedAction("Home", "Index");
+            Assert.IsFalse(isAuthorized);
+        }
+
         #endregion
 
         #region Role and policy tests
