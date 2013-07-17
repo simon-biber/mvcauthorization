@@ -8,7 +8,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
 {
     public static class AuthorizationDescriptorExtensions
     {
-        public static CheckAuthorizationResult IsAuthorizedOrDefault(this BaseAuthorizationDescriptor descriptor, ActionExecutingContext actionExecutingContext, List<PolicyAuthorizationDescriptor> policiesToIgnore)
+        public static CheckAuthorizationResult IsAuthorizedOrDefault(this BaseAuthorizationDescriptor descriptor, List<PolicyAuthorizationDescriptor> policiesToIgnore)
         {
             if (descriptor == null)
             {
@@ -17,7 +17,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
                     IsAuthorized = true
                 };
             }
-            return descriptor.IsAuthorized(actionExecutingContext, policiesToIgnore);
+            return descriptor.IsAuthorized(policiesToIgnore);
         }
     }
 }

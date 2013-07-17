@@ -26,7 +26,7 @@ namespace MvcAuthorization.AuthorizationDescriptors
         /// <param name="descriptor"></param>
         /// <param name="actionExecutingContext"></param>
         /// <returns></returns>
-        public CheckAuthorizationResult IsAuthorized(ActionExecutingContext actionExecutingContext, List<PolicyAuthorizationDescriptor> policiesToIgnore)
+        public CheckAuthorizationResult IsAuthorized(List<PolicyAuthorizationDescriptor> policiesToIgnore)
         {
             Func<IAuthorizationPolicy, ApplyPolicyResult> policyChecker = (policyHandler) =>
             {

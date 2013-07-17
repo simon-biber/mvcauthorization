@@ -7,9 +7,13 @@ using MvcAuthorization.Configuration;
 
 namespace MvcAuthorization
 {
-    public class AuthorizeFilter : ActionFilterAttribute
+    public class AuthorizeFilter : AuthorizeAttribute
     {
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        public string AccessDeniedController { get; set; }
+        public string AccessDeniedAction { get; set; }
+        public string AccessDeniedArea { get; set; }
+
+        protected override bool AuthorizeCore(System.Web.HttpContextBase httpContext)
         {
             IAuthorizationProvider authorizationProvider = AuthorizationProvider.ResolveType<IAuthorizationProvider>();
 
@@ -18,13 +22,28 @@ namespace MvcAuthorization
             {
                 authorizationProvider = ConfigurationAuthorizationProvider.Instance;
             }
-
-            if (!authorizationProvider.IsActionRequestAuthorized(filterContext))
-            {
-                filterContext.Result = new HttpUnauthorizedResult();
-            }
-
-            base.OnActionExecuting(filterContext);
+            return authorizationProvider.IsAuthorizedAction(httpContext);
         }
+
+
+        protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
+        {
+            if (!string.IsNullOrWhiteSpace(AccessDeniedAction) && !string.IsNullOrWhiteSpace(AccessDeniedController))
+            {
+                filterContext.Result = new RedirectToRouteResult(
+                            new System.Web.Routing.RouteValueDictionary(
+                                new
+                                {
+                                    Controller = AccessDeniedController,
+                                    Action = AccessDeniedAction,
+                                    Area = AccessDeniedArea
+                                }));
+            }
+            else
+            {
+                base.HandleUnauthorizedRequest(filterContext);
+            }
+        }
+
     }
 }

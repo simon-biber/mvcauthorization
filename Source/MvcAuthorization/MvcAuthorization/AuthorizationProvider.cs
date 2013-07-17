@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Linq.Expressions;
 using MvcAuthorization.AuthorizationDescriptors;
 using System.Web.Routing;
+using System.Web;
 
 namespace MvcAuthorization
 {
@@ -204,12 +205,12 @@ namespace MvcAuthorization
         /// <param name="controller"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        protected bool CheckIsAuthorized(ActionExecutingContext actionExecutingContext, GlobalAuthorizationDescriptor global, AreaAuthorizationDescriptor area, ControllerAuthorizationDescriptor controller, ActionAuthorizationDescriptor action)
+        protected bool CheckIsAuthorized(GlobalAuthorizationDescriptor global, AreaAuthorizationDescriptor area, ControllerAuthorizationDescriptor controller, ActionAuthorizationDescriptor action)
         {
-            var actionResult = action.IsAuthorizedOrDefault(actionExecutingContext, null);
-            var controllerResult = controller.IsAuthorizedOrDefault(actionExecutingContext, actionResult.PoliciesToSkip);
-            var areaResult = area.IsAuthorizedOrDefault(actionExecutingContext, controllerResult.PoliciesToSkip);
-            var globalResult = global.IsAuthorizedOrDefault(actionExecutingContext, areaResult.PoliciesToSkip);
+            var actionResult = action.IsAuthorizedOrDefault(null);
+            var controllerResult = controller.IsAuthorizedOrDefault(actionResult.PoliciesToSkip);
+            var areaResult = area.IsAuthorizedOrDefault(controllerResult.PoliciesToSkip);
+            var globalResult = global.IsAuthorizedOrDefault(areaResult.PoliciesToSkip);
 
             return actionResult.IsAuthorized && controllerResult.IsAuthorized && areaResult.IsAuthorized && globalResult.IsAuthorized;
         }
@@ -218,7 +219,7 @@ namespace MvcAuthorization
 
         #region IAuthorizationProvider Members
 
-        public bool IsAuthorizedAction(string controllerName, string actionName, string areaName = null, RouteValueDictionary routeValueDictionary = null)
+        public bool IsAuthorizedAction(string controllerName, string actionName, string areaName = null)
         {
             // Get the global item
             GlobalAuthorizationDescriptor global = GetGlobalAuthorizationDescriptor();
@@ -233,29 +234,26 @@ namespace MvcAuthorization
             ActionAuthorizationDescriptor action = GetActionAuthorizationDescriptor(controllerName, actionName, areaName);
 
             // Return auth
-            return CheckIsAuthorized(null, global, area, controller, action);
+            return CheckIsAuthorized(global, area, controller, action);
         }
 
-        public bool IsActionRequestAuthorized(ActionExecutingContext actionExecutingContext)
+        public bool IsAuthorizedAction(ActionExecutingContext actionExecutingContext)
         {
             string areaName = actionExecutingContext.RouteData.DataTokens["area"] as string;
             string actionName = actionExecutingContext.ActionDescriptor.ActionName;
             string controllerName = actionExecutingContext.ActionDescriptor.ControllerDescriptor.ControllerName;
 
-            // Get the global item
-            GlobalAuthorizationDescriptor global = GetGlobalAuthorizationDescriptor();
+            return IsAuthorizedAction(controllerName, actionName, areaName);
+        }
 
-            // Get the area item
-            AreaAuthorizationDescriptor area = GetAreaAuthorizationDescriptor(areaName);
+        public bool IsAuthorizedAction(HttpContextBase httpContext)
+        {
+            RouteData routeData = httpContext.Request.RequestContext.RouteData;
+            string actionName = routeData.GetRequiredString("action");
+            string controllerName = routeData.GetRequiredString("controller");
+            string areaName = routeData.Values["area"] as string;
 
-            // Get the controller item
-            ControllerAuthorizationDescriptor controller = GetControllerAuthorizationDescriptor(controllerName, areaName);
-
-            // Get the action item
-            ActionAuthorizationDescriptor action = GetActionAuthorizationDescriptor(controllerName, actionName, areaName);
-
-            // Return auth
-            return CheckIsAuthorized(actionExecutingContext, global, area, controller, action);
+            return IsAuthorizedAction(controllerName, actionName, areaName);
         }
 
         #endregion
