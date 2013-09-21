@@ -6,6 +6,7 @@ using MvcAuthorization.Policy;
 
 namespace MvcAuthorization.Web.Test.Policy
 {
+    [PolicyMetadata(Name="MyCustomPolicy")]
     public class MyCustomPolicy : AuthorizationPolicy
     {
         public override ApplyPolicyResult ApplyPolicy(ApplyPolicyArgs args)
