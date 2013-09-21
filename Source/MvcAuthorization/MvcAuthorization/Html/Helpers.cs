@@ -3,9 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
+using MvcAuthorization;
 using MvcAuthorization.Configuration;
 
+// TODO: Remove this in a new major version. The helpers extension was moved to the System.Web.Mvc namespace.
 namespace MvcAuthorization.Html
+{
+    internal class DummyClass
+    {
+
+    }
+}
+
+namespace System.Web.Mvc
 {
     public static class Helpers
     {
