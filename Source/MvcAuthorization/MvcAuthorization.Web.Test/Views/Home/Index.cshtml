@@ -6,6 +6,6 @@
 <h2>@ViewBag.Message</h2>
 <p>
     @Html.SecureActionLink("Secure Link", "About")
-    @Html.SecureActionLink("Admin Link", "Index", "TopSecret", "Admin")
+    @Html.SecureActionLink("Admin Link", "Index", "TopSecret", "Admin", new { style = "background-color:#B2FF99;" })
     To learn more about ASP.NET MVC visit <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
 </p>

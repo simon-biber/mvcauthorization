@@ -16,7 +16,7 @@ namespace MvcAuthorization.Html
         /// <param name="linkText"></param>
         /// <param name="actionName"></param>
         /// <returns></returns>
-        public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, string actionName, string controllerName = null, string areaName = null)
+        public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, string actionName, string controllerName = null, string areaName = null, object htmlAttributes = null)
         {
             IAuthorizationProvider authorizationProvider = DependencyResolver.Current.GetService<IAuthorizationProvider>();
 
@@ -31,7 +31,7 @@ namespace MvcAuthorization.Html
 
             if (authorizationProvider.IsAuthorizedAction(controller, actionName, areaName))
             {
-                html = System.Web.Mvc.Html.LinkExtensions.ActionLink(helper, linkText, actionName, controller, new { area = areaName }, null);
+                html = System.Web.Mvc.Html.LinkExtensions.ActionLink(helper, linkText, actionName, controller, new { area = areaName }, htmlAttributes);
             }
 
             return html;
