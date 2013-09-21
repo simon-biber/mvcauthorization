@@ -10,6 +10,7 @@ using MvcAuthorization.AuthorizationDescriptors;
 
 namespace MvcAuthorization
 {
+
     public class ConfigurationAuthorizationProvider : AuthorizationProvider
     {
         protected override GlobalAuthorizationDescriptor LoadGlobalAuthorizationDescriptor()
@@ -71,7 +72,7 @@ namespace MvcAuthorization
         private static readonly Lazy<ConfigurationAuthorizationProvider> _instance
              = new Lazy<ConfigurationAuthorizationProvider>(() => new ConfigurationAuthorizationProvider());
 
-        internal static ConfigurationAuthorizationProvider Instance
+        internal static ConfigurationAuthorizationProvider DefaultInstance
         {
             get
             {

@@ -20,7 +20,7 @@ namespace MvcAuthorization
             // If there's none defined through the type resolver use the configuration provider as the default
             if (authorizationProvider == null)
             {
-                authorizationProvider = ConfigurationAuthorizationProvider.Instance;
+                authorizationProvider = ConfigurationAuthorizationProvider.DefaultInstance;
             }
             return authorizationProvider.IsAuthorizedAction(httpContext);
         }

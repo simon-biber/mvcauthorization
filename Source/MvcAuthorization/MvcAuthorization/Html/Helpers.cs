@@ -33,7 +33,7 @@ namespace System.Web.Mvc
             // If there's none defined through dependency resolver use the configuration provider as the default
             if (authorizationProvider == null)
             {
-                authorizationProvider = ConfigurationAuthorizationProvider.Instance;
+                authorizationProvider = ConfigurationAuthorizationProvider.DefaultInstance;
             }
 
             MvcHtmlString html = MvcHtmlString.Empty;

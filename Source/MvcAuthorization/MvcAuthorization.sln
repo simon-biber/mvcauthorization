@@ -7,22 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcAuthorization.Web.Test",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcAuthorization.Tests", "MvcAuthorization.Tests\MvcAuthorization.Tests.csproj", "{DCCCFEA1-9645-4A89-A539-5A05308D7C5D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcAuthorization.T4MVC", "MvcAuthorization.T4MVC\MvcAuthorization.T4MVC.csproj", "{7147D186-77C9-44FB-B5C6-9FBE4BB1BD7B}"
+EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = MvcAuthorization.Web.Test\\MvcAuthorization.Web.Test.csproj
-		SccProjectName1 = MvcAuthorization.Web.Test
-		SccLocalPath1 = MvcAuthorization.Web.Test
-		SccProjectUniqueName2 = MvcAuthorization\\MvcAuthorization.csproj
-		SccProjectName2 = MvcAuthorization
-		SccLocalPath2 = MvcAuthorization
-		SccProjectUniqueName3 = MvcAuthorization.Tests\\MvcAuthorization.Tests.csproj
-		SccProjectName3 = MvcAuthorization.Tests
-		SccLocalPath3 = MvcAuthorization.Tests
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -40,6 +27,10 @@ Global
 		{DCCCFEA1-9645-4A89-A539-5A05308D7C5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCCCFEA1-9645-4A89-A539-5A05308D7C5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCCCFEA1-9645-4A89-A539-5A05308D7C5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7147D186-77C9-44FB-B5C6-9FBE4BB1BD7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7147D186-77C9-44FB-B5C6-9FBE4BB1BD7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7147D186-77C9-44FB-B5C6-9FBE4BB1BD7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7147D186-77C9-44FB-B5C6-9FBE4BB1BD7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

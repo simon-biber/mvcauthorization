@@ -6,12 +6,12 @@ using System.Web.Mvc;
 
 namespace MvcAuthorization.Web.Test.Areas.Admin.Controllers
 {
-    public class TopSecretController : Controller
+    public partial class TopSecretController : Controller
     {
         //
         // GET: /Admin/TopSecret/
 
-        public ActionResult Index()
+        public virtual ActionResult Index()
         {
             return View();
         }
