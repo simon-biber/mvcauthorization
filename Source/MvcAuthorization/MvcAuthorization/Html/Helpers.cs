@@ -19,14 +19,84 @@ namespace System.Web.Mvc
 {
     public static class Helpers
     {
+
         /// <summary>
-        /// Renders the action link, provided the user has access to the action method being linked to
+        /// Renders the action link, provided the user has access to the action method being linked to.
         /// </summary>
         /// <param name="helper"></param>
         /// <param name="linkText"></param>
         /// <param name="actionName"></param>
         /// <returns></returns>
-        public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, string actionName, string controllerName = null, string areaName = null, object htmlAttributes = null)
+        public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, string actionName)
+        {
+            return SecureActionLink(helper, linkText, actionName, null, null, null);
+        }
+
+        /// <summary>
+        /// Renders the action link, provided the user has access to the action method being linked to.
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="linkText"></param>
+        /// <param name="actionName"></param>
+        /// <param name="controllerName"></param>
+        /// <returns></returns>
+        public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, string actionName, string controllerName)
+        {
+            return SecureActionLink(helper, linkText, actionName, controllerName, null, null);
+        }
+
+        /// <summary>
+        /// Renders the action link, provided the user has access to the action method being linked to.
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="linkText"></param>
+        /// <param name="actionName"></param>
+        /// <param name="controllerName"></param>
+        /// <param name="areaName"></param>
+        /// <returns></returns>
+        public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, string actionName, string controllerName, string areaName)
+        {
+            return SecureActionLink(helper, linkText, actionName, controllerName, areaName, null);
+        }
+
+        /// <summary>
+        /// Renders the action link, provided the user has access to the action method being linked to.
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="linkText"></param>
+        /// <param name="actionName"></param>
+        /// <param name="htmlAttributes"></param>
+        /// <returns></returns>
+        public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, string actionName, object htmlAttributes)
+        {
+            return SecureActionLink(helper, linkText, actionName, null, null, htmlAttributes);
+        }
+
+        /// <summary>
+        /// Renders the action link, provided the user has access to the action method being linked to.
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="linkText"></param>
+        /// <param name="actionName"></param>
+        /// <param name="controllerName"></param>
+        /// <param name="htmlAttributes"></param>
+        /// <returns></returns>
+        public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, string actionName, string controllerName, object htmlAttributes)
+        {
+            return SecureActionLink(helper, linkText, actionName, controllerName, null, htmlAttributes);
+        }
+
+        /// <summary>
+        /// Renders the action link, provided the user has access to the action method being linked to.
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="linkText"></param>
+        /// <param name="actionName"></param>
+        /// <param name="controllerName"></param>
+        /// <param name="areaName"></param>
+        /// <param name="htmlAttributes"></param>
+        /// <returns></returns>
+        public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, string actionName, string controllerName, string areaName, object htmlAttributes)
         {
             IAuthorizationProvider authorizationProvider = DependencyResolver.Current.GetService<IAuthorizationProvider>();
 

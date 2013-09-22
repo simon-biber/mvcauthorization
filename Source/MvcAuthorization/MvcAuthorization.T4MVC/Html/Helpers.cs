@@ -10,7 +10,28 @@ namespace System.Web.Mvc
 
     public static class Helpers
     {
-        public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, ActionResult result, object htmlAttributes = null)
+
+        /// <summary>
+        /// Renders the action link, provided the user has access to the action method being linked to.
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="linkText"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, ActionResult result)
+        {
+            return SecureActionLink(helper, linkText, result, null);
+        }
+
+        /// <summary>
+        /// Renders the action link, provided the user has access to the action method being linked to.
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="linkText"></param>
+        /// <param name="result"></param>
+        /// <param name="htmlAttributes"></param>
+        /// <returns></returns>
+        public static MvcHtmlString SecureActionLink(this HtmlHelper helper, string linkText, ActionResult result, object htmlAttributes)
         {
             IAuthorizationProvider authorizationProvider = DependencyResolver.Current.GetService<IAuthorizationProvider>();
 

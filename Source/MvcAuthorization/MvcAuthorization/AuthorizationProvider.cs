@@ -18,31 +18,37 @@ namespace MvcAuthorization
         /// <summary>
         /// 
         /// </summary>
+        [CLSCompliant(false)]
         protected GlobalAuthorizationDescriptor _globalAuthorizationDescriptor = null;
 
         /// <summary>
         /// 
         /// </summary>
+        [CLSCompliant(false)]
         protected object _globalAuthorizationDescriptorLock = new object();
 
         /// <summary>
         /// Cache for area authorizations
         /// </summary>
+        [CLSCompliant(false)]
         protected ConcurrentDictionary<string, AreaAuthorizationDescriptor> _areaAuthorizationDescriptorCache = new ConcurrentDictionary<string, AreaAuthorizationDescriptor>();
 
         /// <summary>
         /// Cache for controller authorizations
         /// </summary>
+        [CLSCompliant(false)]
         protected ConcurrentDictionary<string, ControllerAuthorizationDescriptor> _controllerAuthorizationDescriptorCache = new ConcurrentDictionary<string, ControllerAuthorizationDescriptor>();
 
         /// <summary>
         /// Cache for controller authorizations
         /// </summary>
+        [CLSCompliant(false)]
         protected ConcurrentDictionary<string, ActionAuthorizationDescriptor> _actionAuthorizationDescriptorCache = new ConcurrentDictionary<string, ActionAuthorizationDescriptor>();
 
         /// <summary>
         /// Instantiate an object from a type using an IOC container
         /// </summary>
+        [CLSCompliant(false)]
         protected static Func<Type, object> _typeResolver = null;
 
         /// <summary>
