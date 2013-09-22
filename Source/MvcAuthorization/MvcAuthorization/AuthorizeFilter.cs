@@ -28,7 +28,12 @@ namespace MvcAuthorization
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            if (!string.IsNullOrWhiteSpace(AccessDeniedAction) && !string.IsNullOrWhiteSpace(AccessDeniedController))
+            if (filterContext.HttpContext.Request.IsAjaxRequest())
+            {
+                filterContext.HttpContext.Response.StatusCode = 401;
+                filterContext.HttpContext.Response.End();
+            }
+            else if (!string.IsNullOrWhiteSpace(AccessDeniedAction) && !string.IsNullOrWhiteSpace(AccessDeniedController))
             {
                 filterContext.Result = new RedirectToRouteResult(
                             new System.Web.Routing.RouteValueDictionary(
