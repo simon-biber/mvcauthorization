@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>MvcAuthorization</id>
+    <version>2.1.0</version>
+    <authors>Ryan Wright</authors>
+    <owners>Ryan Wright</owners>
+    <licenseUrl>http://mvcauthorization.codeplex.com/license</licenseUrl>
+    <projectUrl>http://mvcauthorization.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>MvcAuthorization is a configuration based authorization library for ASP.NET MVC. The original concept, description, and examples can be found at http://www.ryanmwright.com</description>
+    <releaseNotes>Add html attributes support. Add AJAX support.</releaseNotes>
+    <copyright>Copyright 2013 Ryan Wright</copyright>
+    <tags>ASP.NET MVC Authorization Library Code Security</tags>
+    <dependencies>
+      <dependency id="WebActivatorEx" version="2.0.0"/>
+    </dependencies>
+  </metadata>
+</package>
