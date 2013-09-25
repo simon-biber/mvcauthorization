@@ -126,83 +126,59 @@ namespace MvcAuthorization.Web.Test.Controllers
     }
 
     [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
-    public partial class T4MVC_AccountController : MvcAuthorization.Web.Test.Controllers.AccountController
+    public class T4MVC_AccountController : MvcAuthorization.Web.Test.Controllers.AccountController
     {
         public T4MVC_AccountController() : base(Dummy.Instance) { }
 
-        partial void LogOnOverride(T4MVC_System_Web_Mvc_ActionResult callInfo);
-
         public override System.Web.Mvc.ActionResult LogOn()
         {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.LogOn);
-            LogOnOverride(callInfo);
+            var callInfo = new T4MVC_ActionResult(Area, Name, ActionNames.LogOn);
             return callInfo;
         }
-
-        partial void LogOnOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, MvcAuthorization.Web.Test.Models.LogOnModel model, string returnUrl);
 
         public override System.Web.Mvc.ActionResult LogOn(MvcAuthorization.Web.Test.Models.LogOnModel model, string returnUrl)
         {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.LogOn);
+            var callInfo = new T4MVC_ActionResult(Area, Name, ActionNames.LogOn);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "model", model);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "returnUrl", returnUrl);
-            LogOnOverride(callInfo, model, returnUrl);
             return callInfo;
         }
-
-        partial void LogOffOverride(T4MVC_System_Web_Mvc_ActionResult callInfo);
 
         public override System.Web.Mvc.ActionResult LogOff()
         {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.LogOff);
-            LogOffOverride(callInfo);
+            var callInfo = new T4MVC_ActionResult(Area, Name, ActionNames.LogOff);
             return callInfo;
         }
-
-        partial void RegisterOverride(T4MVC_System_Web_Mvc_ActionResult callInfo);
 
         public override System.Web.Mvc.ActionResult Register()
         {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Register);
-            RegisterOverride(callInfo);
+            var callInfo = new T4MVC_ActionResult(Area, Name, ActionNames.Register);
             return callInfo;
         }
-
-        partial void RegisterOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, MvcAuthorization.Web.Test.Models.RegisterModel model);
 
         public override System.Web.Mvc.ActionResult Register(MvcAuthorization.Web.Test.Models.RegisterModel model)
         {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Register);
+            var callInfo = new T4MVC_ActionResult(Area, Name, ActionNames.Register);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "model", model);
-            RegisterOverride(callInfo, model);
             return callInfo;
         }
-
-        partial void ChangePasswordOverride(T4MVC_System_Web_Mvc_ActionResult callInfo);
 
         public override System.Web.Mvc.ActionResult ChangePassword()
         {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.ChangePassword);
-            ChangePasswordOverride(callInfo);
+            var callInfo = new T4MVC_ActionResult(Area, Name, ActionNames.ChangePassword);
             return callInfo;
         }
-
-        partial void ChangePasswordOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, MvcAuthorization.Web.Test.Models.ChangePasswordModel model);
 
         public override System.Web.Mvc.ActionResult ChangePassword(MvcAuthorization.Web.Test.Models.ChangePasswordModel model)
         {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.ChangePassword);
+            var callInfo = new T4MVC_ActionResult(Area, Name, ActionNames.ChangePassword);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "model", model);
-            ChangePasswordOverride(callInfo, model);
             return callInfo;
         }
 
-        partial void ChangePasswordSuccessOverride(T4MVC_System_Web_Mvc_ActionResult callInfo);
-
         public override System.Web.Mvc.ActionResult ChangePasswordSuccess()
         {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.ChangePasswordSuccess);
-            ChangePasswordSuccessOverride(callInfo);
+            var callInfo = new T4MVC_ActionResult(Area, Name, ActionNames.ChangePasswordSuccess);
             return callInfo;
         }
 

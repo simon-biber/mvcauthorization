@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>T4MVCExtensions</id>
-    <version>3.7.4</version>
+    <version>3.0.3</version>
     <authors>David Ebbo</authors>
     <owners>David Ebbo</owners>
     <licenseUrl>http://mvccontrib.codeplex.com/license</licenseUrl>

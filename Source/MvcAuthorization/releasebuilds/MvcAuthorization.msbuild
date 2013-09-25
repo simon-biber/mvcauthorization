@@ -1,0 +1,16 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets="Compile">
+  <PropertyGroup>
+    <BuildOutputPath>..\releasebuilds\MvcAuthorization\$(VersionNumber)\lib\net40\</BuildOutputPath>
+  </PropertyGroup>
+  <Target Name="Clean">
+    <ItemGroup>
+      <BinFiles Include="$(BuildOutputPath)\*.*" />
+    </ItemGroup>
+    <Delete Files="@(BinFiles)" />
+  </Target>
+  <Target Name="Compile" DependsOnTargets="Clean">
+    <MSBuild Projects="..\MvcAuthorization\MvcAuthorization.csproj"
+		Properties="Configuration=Release;" />
+    <Exec Command="xcopy /Y /I &quot;..\MvcAuthorization\bin\Release\MvcAuthorization.*&quot; $(BuildOutputPath)" />
+  </Target>
+</Project>
