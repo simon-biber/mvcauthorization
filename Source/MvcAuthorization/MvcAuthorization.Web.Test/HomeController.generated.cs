@@ -91,19 +91,25 @@ namespace MvcAuthorization.Web.Test.Controllers
     }
 
     [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
-    public class T4MVC_HomeController : MvcAuthorization.Web.Test.Controllers.HomeController
+    public partial class T4MVC_HomeController : MvcAuthorization.Web.Test.Controllers.HomeController
     {
         public T4MVC_HomeController() : base(Dummy.Instance) { }
 
+        partial void IndexOverride(T4MVC_System_Web_Mvc_ActionResult callInfo);
+
         public override System.Web.Mvc.ActionResult Index()
         {
-            var callInfo = new T4MVC_ActionResult(Area, Name, ActionNames.Index);
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Index);
+            IndexOverride(callInfo);
             return callInfo;
         }
 
+        partial void AboutOverride(T4MVC_System_Web_Mvc_ActionResult callInfo);
+
         public override System.Web.Mvc.ActionResult About()
         {
-            var callInfo = new T4MVC_ActionResult(Area, Name, ActionNames.About);
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.About);
+            AboutOverride(callInfo);
             return callInfo;
         }
 

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>T4MVC</id>
-    <version>3.0.0</version>
+    <version>3.5.0</version>
     <authors>David Ebbo</authors>
     <owners>David Ebbo</owners>
     <licenseUrl>http://mvccontrib.codeplex.com/license</licenseUrl>
@@ -13,7 +13,7 @@
     <language>en-US</language>
     <tags>t4 mvc t4mvc</tags>
     <dependencies>
-      <dependency id="T4MVCExtensions" version="3.0.0" />
+      <dependency id="T4MVCExtensions" version="3.5.0" />
     </dependencies>
   </metadata>
 </package>
