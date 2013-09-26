@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>MvcAuthorization.T4MVC</id>
+    <version>2.0.1</version>
+    <authors>Ryan Wright</authors>
+    <owners>Ryan Wright</owners>
+    <licenseUrl>http://mvcauthorization.codeplex.com/license</licenseUrl>
+    <projectUrl>http://mvcauthorization.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>MvcAuthorization is a configuration based authorization library for ASP.NET MVC. MvcAuthorization.T4MVC adds T4MVC extensions support.</description>
+    <releaseNotes>Fix package dependency on MvcAuthorization, requires 2.1.0.</releaseNotes>
+    <copyright>Copyright 2013 Ryan Wright</copyright>
+    <tags>ASP.NET MVC Authorization Library Code Security</tags>
+    <dependencies>
+      <dependency id="WebActivatorEx" version="2.0.0"/>
+      <dependency id="T4MVC" version="3.5.0"/>
+      <dependency id="MvcAuthorization" version="2.1.0"/>
+    </dependencies>
+  </metadata>
+</package>
