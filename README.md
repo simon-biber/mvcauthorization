@@ -1,5 +1,7 @@
 # mvcauthorization
 
+[![NuGet version (MvcAuthorization)](https://img.shields.io/nuget/v/MvcAuthorization.svg?style=flat-square)](https://www.nuget.org/packages/MvcAuthorization)
+
 ASP.NET Authorization Library for ASP.NET MVC
 
 Source: https://archive.codeplex.com/?p=mvcauthorization
